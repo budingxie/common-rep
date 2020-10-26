@@ -3,6 +3,12 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+    <packaging>pom</packaging>
+    <modules>
+        <module>web-app</module>
+        <module>message-oriented-middleware</module>
+        <module>cache-middleware</module>
+    </modules>
 
     <parent>
         <groupId>org.springframework.boot</groupId>
@@ -14,60 +20,83 @@
     <artifactId>common-resp</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+        <java.version>1.8</java.version>
+        <lombok.version>1.18.10</lombok.version>
+        <mysql.version>8.0.16</mysql.version>
+        <kylin.version>3.0.2-mdh3.0.1</kylin.version>
+        <mybatisplus.version>3.3.2</mybatisplus.version>
+        <aspectjweaver.version>1.9.4</aspectjweaver.version>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web</artifactId>
+                <version>2.1.5.RELEASE</version>
+            </dependency>
+
+            <!-- aop -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-aop</artifactId>
+                <version>5.1.7.RELEASE</version>
+            </dependency>
+
+            <!-- aop规范 -->
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspectjweaver.version}</version>
+            </dependency>
+
+            <!-- mysql 依赖 -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.version}</version>
+            </dependency>
+
+            <!-- kylin 依赖 -->
+            <dependency>
+                <groupId>org.apache.kylin</groupId>
+                <artifactId>kylin-jdbc</artifactId>
+                <version>${kylin.version}</version>
+            </dependency>
+
+            <!-- apache druid 依赖-->
+            <dependency>
+                <groupId>org.apache.calcite.avatica</groupId>
+                <artifactId>avatica-core</artifactId>
+                <version>1.16.0</version>
+            </dependency>
+
+            <!-- mybatis plus 依赖 -->
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>mybatis-plus-boot-starter</artifactId>
+                <version>${mybatisplus.version}</version>
+            </dependency>
+
+            <!-- 插件jar -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
 
-        <!-- mysql 依赖 -->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.16</version>
-        </dependency>
-
-        <!-- kylin 依赖 -->
-        <dependency>
-            <groupId>org.apache.kylin</groupId>
-            <artifactId>kylin-jdbc</artifactId>
-            <version>3.0.2-mdh3.0.1</version>
-        </dependency>
-
-        <!-- apache druid 依赖-->
-        <dependency>
-            <groupId>org.apache.calcite.avatica</groupId>
-            <artifactId>avatica-core</artifactId>
-            <version>1.16.0</version>
-        </dependency>
-
-        <!-- mybatis plus 依赖 -->
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus-boot-starter</artifactId>
-            <version>3.3.2</version>
-        </dependency>
-
-        <!-- aop -->
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-aop</artifactId>
-        </dependency>
-
-        <!-- aop实现 -->
-        <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjweaver</artifactId>
-            <version>1.9.4</version>
-        </dependency>
-
+        <!-- 插件jar -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.10</version>
-            <optional>true</optional>
         </dependency>
-
 
     </dependencies>
 
