@@ -29,7 +29,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = {NullPointerException.class})
-    public Result nullPointerEx(HttpServletRequest request, NullPointerException ex) {
+    public Result<String> nullPointerEx(HttpServletRequest request, NullPointerException ex) {
         log.error("path:{},errorMsg:{}", request.getServletPath(), ex.getMessage());
         return ResultUtils.getFailResult(ex.getMessage());
     }

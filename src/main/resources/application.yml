@@ -1,0 +1,31 @@
+spring:
+  datasource:
+    default-source:
+      url: jdbc:mysql://localhost:3306/test?allowMultiQueries=true&charset=utf8mb4&serverTimezone=UTC&characterEncoding=utf-8
+      driver-class-name: com.mysql.jdbc.Driver
+      username: root
+      password: root@123
+      type: com.zaxxer.hikari.HikariDataSource
+    other-source:
+      - key: druid
+        url: jdbc:avatica:remote:url=http://a.b.c.d/druid/v2/sql/avatica/
+        driver-class-name: org.apache.calcite.avatica.remote.Driver
+        username: admin
+        password: admin
+        type: com.zaxxer.hikari.HikariDataSource
+      - key: kylin
+        url: jdbc:kylin://a.b.c.d/db
+        driver-class-name: org.apache.kylin.jdbc.Driver
+        username: admin
+        password: admin
+        type: com.zaxxer.hikari.HikariDataSource
+      - key: doris
+#        url: jdbc:mysql://a.b.c.d/db
+        url: jdbc:mysql://localhost:3306/test?allowMultiQueries=true&charset=utf8mb4&serverTimezone=UTC&characterEncoding=utf-8
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: root
+        password: root@123
+        type: com.zaxxer.hikari.HikariDataSource
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*.xml
