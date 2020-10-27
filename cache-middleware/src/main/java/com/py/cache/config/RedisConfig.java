@@ -1,7 +1,7 @@
 package com.py.cache.config;
 
 /**
- * description
+ * description：缓存配置类
  *
  * @author pengyou@xiaomi.com
  * @version 1.0.0

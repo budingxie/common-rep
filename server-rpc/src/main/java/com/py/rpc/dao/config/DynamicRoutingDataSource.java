@@ -5,7 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 /**
- * description
+ * description：数据源设置生效
  *
  * @author pengyou@xiaomi.com
  * @version 1.0.0

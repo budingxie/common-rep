@@ -11,6 +11,8 @@
 
     <artifactId>web-app</artifactId>
 
+    <packaging>jar</packaging>
+
     <dependencies>
 
         <!-- web容器依赖 -->
@@ -65,5 +67,22 @@
         </dependency>
 
     </dependencies>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!-- 热部署 -->
+                    <fork>true</fork>
+                    <!-- 启动类 -->
+                    <mainClass>com.py.AppBootstrap</mainClass>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
 
 </project>

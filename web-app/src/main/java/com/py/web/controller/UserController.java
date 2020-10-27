@@ -2,6 +2,7 @@ package com.py.web.controller;
 
 import com.py.rpc.dto.UserReqDTO;
 import com.py.rpc.dto.UserRespDTO;
+import com.py.web.remote.UserCacheServiceRemote;
 import com.py.web.remote.UserServiceRemote;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,14 +26,17 @@ public class UserController {
     @Resource
     private UserServiceRemote userServiceRemote;
 
+    @Resource
+    private UserCacheServiceRemote userCacheServiceRemote;
+
     @GetMapping(value = "/users")
     public List<UserRespDTO> users() {
         return userServiceRemote.findUsers();
     }
 
-    @GetMapping("/ids")
-    public void findUserByIds(List<Long> uIds) {
-
+    @GetMapping("/id")
+    public UserRespDTO findUserById(Long id) {
+        return userCacheServiceRemote.findUserById(id);
     }
 
     @GetMapping("/save")

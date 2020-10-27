@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * description
+ * description：数据库实体类
  *
  * @author pengyou@xiaomi.com
  * @version 1.0.0

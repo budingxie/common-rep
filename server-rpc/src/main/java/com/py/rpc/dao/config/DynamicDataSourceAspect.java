@@ -9,7 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
- * description
+ * description：拦截器，拦截注解DataSource
  *
  * @author pengyou@xiaomi.com
  * @version 1.0.0

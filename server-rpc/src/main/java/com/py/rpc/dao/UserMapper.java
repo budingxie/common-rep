@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 /**
- * description
+ * description：查询数据库操作
  *
  * @author pengyou@xiaomi.com
  * @version 1.0.0

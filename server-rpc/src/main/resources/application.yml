@@ -1,6 +1,6 @@
 spring:
   main:
-    #解决Bean重复定义问题
+    #解决Bean重复定义问题，dubbo版本和springboot版本问题
     allow-bean-definition-overriding: true
   application:
     name: server-rpc
@@ -55,4 +55,4 @@ dubbo:
     #设置协议-协议由提供方指定消费方被动接受
     name: dubbo
     #设置协议使用的端口
-    port: 20880
+    port: -1

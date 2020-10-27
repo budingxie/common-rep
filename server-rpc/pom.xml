@@ -103,4 +103,21 @@
 
     </dependencies>
 
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <!-- 热部署 fork :  如果没有该项配置，devtools不会起作用，即应用不会restart -->
+                    <fork>true</fork>
+                    <!-- 指定启动类 -->
+                    <mainClass>com.py.RpcAppBootstrap</mainClass>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
 </project>

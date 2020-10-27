@@ -1,0 +1,36 @@
+server:
+  port: 8082
+
+spring:
+  main:
+    #解决Bean重复定义问题，dubbo版本和springboot版本问题
+    allow-bean-definition-overriding: true
+  cache:
+    #缓存类型
+    type: redis
+  redis:
+    #地址
+    host: 192.168.134.100
+    #端口
+    port: 6379
+    #使用的数据库
+    database: 0
+
+dubbo:
+  #配置服务信息
+  application:
+    name: cache-middleware
+    #禁用QOS同一台机器可能会有端口冲突现象
+    qos-enable: false
+    qos-accept-foreign-ip: false
+  registry:
+    #设置注册中心地址
+    address: nacos://192.168.134.100:8848
+  protocol:
+    #设置协议-协议由提供方指定消费方被动接受
+    name: dubbo
+    #设置协议使用的端口
+    port: -1
+  consumer:
+    #设置超时时间
+    timeout: 3000

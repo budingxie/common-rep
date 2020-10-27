@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 /**
- * description：当需要调用多个远程服务，把具体逻辑写在这里
+ * description：当需要调用多个远程服务，根据逻辑组装多个结果
  *
  * @author pengyou@xiaomi.com
  * @version 1.0.0
