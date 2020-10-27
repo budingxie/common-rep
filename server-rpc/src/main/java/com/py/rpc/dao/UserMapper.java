@@ -1,9 +1,9 @@
-package com.py.web.dao;
+package com.py.rpc.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.py.web.dao.config.DataSource;
-import com.py.web.dto.UserRespDTO;
-import com.py.web.po.UserPOJO;
+import com.py.rpc.dao.config.DataSource;
+import com.py.rpc.dto.UserRespDTO;
+import com.py.rpc.po.UserPOJO;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

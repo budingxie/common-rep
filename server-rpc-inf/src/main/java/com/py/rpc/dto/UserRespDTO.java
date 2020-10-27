@@ -1,4 +1,4 @@
-package com.py.web.dto;
+package com.py.rpc.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

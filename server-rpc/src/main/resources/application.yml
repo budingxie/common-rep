@@ -1,0 +1,58 @@
+spring:
+  main:
+    #解决Bean重复定义问题
+    allow-bean-definition-overriding: true
+  application:
+    name: server-rpc
+  #动态数据源配置
+  datasource:
+    default-source:
+      url: jdbc:mysql://localhost:3306/test?allowMultiQueries=true&charset=utf8mb4&serverTimezone=UTC&characterEncoding=utf-8
+      driver-class-name: com.mysql.jdbc.Driver
+      username: root
+      password: root@123
+      type: com.zaxxer.hikari.HikariDataSource
+    other-source:
+      - key: druid
+        url: jdbc:avatica:remote:url=http://a.b.c.d/druid/v2/sql/avatica/
+        driver-class-name: org.apache.calcite.avatica.remote.Driver
+        username: admin
+        password: admin
+        type: com.zaxxer.hikari.HikariDataSource
+      - key: kylin
+        url: jdbc:kylin://a.b.c.d/db
+        driver-class-name: org.apache.kylin.jdbc.Driver
+        username: admin
+        password: admin
+        type: com.zaxxer.hikari.HikariDataSource
+      - key: doris
+        #url: jdbc:mysql://a.b.c.d/db
+        url: jdbc:mysql://localhost:3306/test?allowMultiQueries=true&charset=utf8mb4&serverTimezone=UTC&characterEncoding=utf-8
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: root
+        password: root@123
+        type: com.zaxxer.hikari.HikariDataSource
+
+mybatis-plus:
+  #mybatis-plus设置xml地址
+  mapper-locations: classpath:/mapper/*.xml
+
+server:
+  #服务启动端口
+  port: 8081
+
+dubbo:
+  #配置服务信息
+  application:
+    name: server-rpc
+    #禁用QOS同一台机器可能会有端口冲突现象
+    qos-enable: false
+    qos-accept-foreign-ip: false
+  registry:
+    #设置注册中心地址
+    address: nacos://192.168.134.100:8848
+  protocol:
+    #设置协议-协议由提供方指定消费方被动接受
+    name: dubbo
+    #设置协议使用的端口
+    port: 20880

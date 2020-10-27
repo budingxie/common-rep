@@ -1,8 +1,8 @@
 package com.py.web.controller;
 
-import com.py.web.dto.UserReqDTO;
-import com.py.web.dto.UserRespDTO;
-import com.py.web.service.UserService;
+import com.py.rpc.dto.UserReqDTO;
+import com.py.rpc.dto.UserRespDTO;
+import com.py.web.remote.UserServiceRemote;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,11 +23,11 @@ import java.util.List;
 public class UserController {
 
     @Resource
-    private UserService userService;
+    private UserServiceRemote userServiceRemote;
 
     @GetMapping(value = "/users")
     public List<UserRespDTO> users() {
-        return userService.findUsers();
+        return userServiceRemote.findUsers();
     }
 
     @GetMapping("/ids")

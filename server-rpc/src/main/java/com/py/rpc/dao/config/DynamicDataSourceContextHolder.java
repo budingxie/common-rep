@@ -1,6 +1,7 @@
-package com.py.web.dao.config;
+package com.py.rpc.dao.config;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,8 +13,9 @@ import java.util.List;
  * @version 1.0.0
  * @date 2020/10/26
  */
-@Slf4j
 public class DynamicDataSourceContextHolder {
+
+    private static final Logger log = LoggerFactory.getLogger(DynamicDataSourceContextHolder.class);
 
     /**
      * 存储已经注册的数据源的key

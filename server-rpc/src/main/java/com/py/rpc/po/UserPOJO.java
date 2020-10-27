@@ -1,4 +1,4 @@
-package com.py.web.po;
+package com.py.rpc.po;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

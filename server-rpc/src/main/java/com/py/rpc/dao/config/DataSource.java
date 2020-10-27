@@ -1,4 +1,4 @@
-package com.py.web.dao.config;
+package com.py.rpc.dao.config;
 
 import java.lang.annotation.*;
 

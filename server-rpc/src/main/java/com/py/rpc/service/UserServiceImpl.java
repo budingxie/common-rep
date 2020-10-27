@@ -1,9 +1,9 @@
-package com.py.web.service.impl;
+package com.py.rpc.service;
 
-import com.py.web.dao.UserMapper;
-import com.py.web.dto.UserRespDTO;
-import com.py.web.service.UserService;
-import org.springframework.stereotype.Service;
+import com.py.rpc.dao.UserMapper;
+import com.py.rpc.dto.UserRespDTO;
+import com.py.rpc.inf.UserService;
+import org.apache.dubbo.config.annotation.Service;
 
 import javax.annotation.Resource;
 import java.util.List;

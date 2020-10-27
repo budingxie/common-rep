@@ -1,10 +1,11 @@
-package com.py.web.dao.config;
+package com.py.rpc.dao.config;
 
-import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -16,11 +17,13 @@ import org.springframework.stereotype.Component;
  */
 @Aspect
 @Component
-@Slf4j
 public class DynamicDataSourceAspect {
+
+    private static final Logger log = LoggerFactory.getLogger(DynamicDataSourceAspect.class);
 
     @Before("@annotation(ds)")
     public void changeDataSource(JoinPoint point, DataSource ds) {
+
         String dsId = ds.value();
         if (DynamicDataSourceContextHolder.dataSourceIds.contains(dsId)) {
             DynamicDataSourceContextHolder.setDataSourceRouterKey(dsId);

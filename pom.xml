@@ -8,6 +8,8 @@
         <module>web-app</module>
         <module>message-oriented-middleware</module>
         <module>cache-middleware</module>
+        <module>server-rpc</module>
+        <module>server-rpc-inf</module>
     </modules>
 
     <parent>
@@ -24,17 +26,52 @@
         <java.version>1.8</java.version>
         <lombok.version>1.18.10</lombok.version>
         <mysql.version>8.0.16</mysql.version>
-        <kylin.version>3.0.2-mdh3.0.1</kylin.version>
+        <kylin.version>3.0.1</kylin.version>
         <mybatisplus.version>3.3.2</mybatisplus.version>
         <aspectjweaver.version>1.9.4</aspectjweaver.version>
+        <dubbo.version>2.7.0</dubbo.version>
+        <nacos.registry.version>2.7.1</nacos.registry.version>
+        <nacos.client.version>1.0.0</nacos.client.version>
     </properties>
 
     <dependencyManagement>
         <dependencies>
 
+            <!-- dubbo依赖 -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-spring-boot-starter</artifactId>
+                <version>${dubbo.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo</artifactId>
+                <version>${dubbo.version}</version>
+            </dependency>
+
+            <!-- nacos依赖 -->
+            <dependency>
+                <groupId>org.apache.dubbo</groupId>
+                <artifactId>dubbo-registry-nacos</artifactId>
+                <version>${nacos.registry.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba.nacos</groupId>
+                <artifactId>nacos-client</artifactId>
+                <version>${nacos.client.version}</version>
+            </dependency>
+
+            <!-- web 容器依赖 -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
+                <version>2.1.5.RELEASE</version>
+            </dependency>
+
+            <!-- 测试依赖 -->
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-test</artifactId>
                 <version>2.1.5.RELEASE</version>
             </dependency>
 

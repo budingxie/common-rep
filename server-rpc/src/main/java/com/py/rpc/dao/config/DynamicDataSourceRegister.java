@@ -1,7 +1,8 @@
-package com.py.web.dao.config;
+package com.py.rpc.dao.config;
 
 import com.zaxxer.hikari.HikariDataSource;
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.beans.factory.support.GenericBeanDefinition;
@@ -31,8 +32,9 @@ import java.util.Map;
  * @version 1.0.0
  * @date 2020/10/26
  */
-@Slf4j
 public class DynamicDataSourceRegister implements ImportBeanDefinitionRegistrar, EnvironmentAware {
+
+    private static final Logger log = LoggerFactory.getLogger(DynamicDataSourceRegister.class);
 
     /**
      * 配置上下文

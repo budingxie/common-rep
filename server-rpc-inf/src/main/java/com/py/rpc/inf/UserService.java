@@ -1,6 +1,6 @@
-package com.py.web.service;
+package com.py.rpc.inf;
 
-import com.py.web.dto.UserRespDTO;
+import com.py.rpc.dto.UserRespDTO;
 
 import java.util.List;
 

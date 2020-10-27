@@ -1,6 +1,7 @@
-package com.py.web.dao.config;
+package com.py.rpc.dao.config;
 
-import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
 
 /**
@@ -10,8 +11,9 @@ import org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource;
  * @version 1.0.0
  * @date 2020/10/26
  */
-@Slf4j
 public class DynamicRoutingDataSource extends AbstractRoutingDataSource {
+
+    private static final Logger log = LoggerFactory.getLogger(DynamicRoutingDataSource.class);
 
     @Override
     protected Object determineCurrentLookupKey() {
