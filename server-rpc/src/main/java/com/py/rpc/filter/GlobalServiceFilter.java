@@ -28,11 +28,12 @@ public class GlobalServiceFilter implements Filter {
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         Result result = null;
 
-        msgLogger.info("IP:" + RpcContext.getContext().getRemoteHost()
-                + ", Service:" + invoker.getInterface().getName()
-                + ", Method:" + invocation.getMethodName()
-                + ", Request:{" + Arrays.toString(invocation.getArguments())
-                + "}.");
+        msgLogger.info("IP:{}, Service:{}, Method:{}, Request:{}.",
+                RpcContext.getContext().getRemoteHost(),
+                invoker.getInterface().getName(),
+                invocation.getMethodName(),
+                Arrays.toString(invocation.getArguments()));
+
         long startTime = System.currentTimeMillis();
 
         try {
@@ -42,21 +43,23 @@ public class GlobalServiceFilter implements Filter {
                 throw new Exception(result.getException());
             }
         } catch (Exception e) {
-            log.error("IP:" + RpcContext.getContext().getRemoteHost()
-                    + ", Service:" + invoker.getInterface().getName()
-                    + ", Method:" + invocation.getMethodName()
-                    + ", Exception:{" + e.toString() + "}.");
+            log.info("IP:{}, Service:{}, Method:{}, Exception:{}.",
+                    RpcContext.getContext().getRemoteHost(),
+                    invoker.getInterface().getName(),
+                    invocation.getMethodName(),
+                    e.toString());
         } finally {
-            msgLogger.info("IP:" + RpcContext.getContext().getRemoteHost()
-                    + ", Service:" + invoker.getInterface().getName()
-                    + ", Method:" + invocation.getMethodName()
-                    + ", Response:{" + result.toString()
-                    + "}.");
+            msgLogger.info("IP:{}, Service:{}, Method:{}, Response:{}.",
+                    RpcContext.getContext().getRemoteHost(),
+                    invoker.getInterface().getName(),
+                    invocation.getMethodName(),
+                    result);
 
-            log.info("IP:" + RpcContext.getContext().getRemoteHost()
-                    + ", Service:" + invoker.getInterface().getName()
-                    + ", Method:" + invocation.getMethodName()
-                    + ", consume: " + (System.currentTimeMillis() - startTime) + " ms.");
+            log.info("IP:{}, Service:{}, Method:{}, consume: {} ms.",
+                    RpcContext.getContext().getRemoteHost(),
+                    invoker.getInterface().getName(),
+                    invocation.getMethodName(),
+                    System.currentTimeMillis() - startTime);
         }
 
         return result;
