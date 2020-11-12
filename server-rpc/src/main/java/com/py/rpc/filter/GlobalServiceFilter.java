@@ -1,11 +1,13 @@
 package com.py.rpc.filter;
 
 
+import com.py.utils.log.TraceUtil;
 import org.apache.dubbo.common.Constants;
 import org.apache.dubbo.common.extension.Activate;
 import org.apache.dubbo.rpc.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import java.util.Arrays;
 
@@ -27,6 +29,7 @@ public class GlobalServiceFilter implements Filter {
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         Result result = null;
+        MDC.put(TraceUtil.MDC_TRACE_ID, TraceUtil.get());
 
         msgLogger.info("IP:{}, Service:{}, Method:{}, Request:{}.",
                 RpcContext.getContext().getRemoteHost(),
@@ -60,6 +63,8 @@ public class GlobalServiceFilter implements Filter {
                     invoker.getInterface().getName(),
                     invocation.getMethodName(),
                     System.currentTimeMillis() - startTime);
+
+            MDC.remove(TraceUtil.MDC_TRACE_ID);
         }
 
         return result;
