@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: dev
   main:
     #解决Bean重复定义问题，dubbo版本和springboot版本问题
     allow-bean-definition-overriding: true

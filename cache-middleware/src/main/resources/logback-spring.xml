@@ -44,21 +44,21 @@
         </triggeringPolicy>
     </appender>
 
-    <!--
+<!--
+    &lt;!&ndash;日志异步到数据库 &ndash;&gt;
+    <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
         &lt;!&ndash;日志异步到数据库 &ndash;&gt;
-        <appender name="DB" class="ch.qos.logback.classic.db.DBAppender">
-            &lt;!&ndash;日志异步到数据库 &ndash;&gt;
-            <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
-                &lt;!&ndash;连接池 &ndash;&gt;
-                <dataSource class="com.mchange.v2.c3p0.ComboPooledDataSource">
-                    <driverClass>com.mysql.jdbc.Driver</driverClass>
-                    <url>jdbc:mysql://127.0.0.1:3306/databaseName</url>
-                    <user>root</user>
-                    <password>root@123</password>
-                </dataSource>
-            </connectionSource>
-        </appender>
-     -->
+        <connectionSource class="ch.qos.logback.core.db.DriverManagerConnectionSource">
+            &lt;!&ndash;连接池 &ndash;&gt;
+            <dataSource class="com.mchange.v2.c3p0.ComboPooledDataSource">
+                <driverClass>com.mysql.jdbc.Driver</driverClass>
+                <url>jdbc:mysql://127.0.0.1:3306/databaseName</url>
+                <user>root</user>
+                <password>root@123</password>
+            </dataSource>
+        </connectionSource>
+    </appender>
+ -->
 
     <!-- show parameters for hibernate sql 专为 Hibernate 定制 -->
     <logger level="TRACE" name="org.hibernate.type.descriptor.sql.BasicBinder"/>
@@ -81,14 +81,14 @@
 
     <!-- 测试环境+开发环境. 多个使用逗号隔开 -->
     <springProfile name="test,dev">
-        <logger name="com.py.rpc" level="DEBUG" additivity="false">
+        <logger name="com.py.web" level="DEBUG" additivity="false">
             <appender-ref ref="STDOUT"/>
         </logger>
     </springProfile>
 
     <!-- 生产环境 -->
     <springProfile name="prod">
-        <logger name="com.py.rpc" level="INFO" additivity="false">
+        <logger name="com.py.web" level="INFO" additivity="false">
             <appender-ref ref="FILE"/>
         </logger>
     </springProfile>
