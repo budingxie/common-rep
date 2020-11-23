@@ -1,4 +1,6 @@
 spring:
+  profiles:
+    active: dev
   application:
     name: web-app
   main:
@@ -9,6 +11,7 @@ server:
   #服务端口
   port: 8080
 
+# dubbo配置
 dubbo:
   application:
     #rpc服务名
@@ -22,3 +25,4 @@ dubbo:
   consumer:
     #设置超时时间
     timeout: 3000
+    check: false

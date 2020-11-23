@@ -40,42 +40,84 @@
 
         <!-- 版本配置 -->
         <java.version>1.8</java.version>
+
+        <!-- 工具 -->
+        <hutool.version>4.5.15</hutool.version>
         <lombok.version>1.18.10</lombok.version>
+
+        <!-- 数据库驱动 -->
         <mysql.version>8.0.16</mysql.version>
         <kylin.version>3.0.1</kylin.version>
+        <avatica.version>1.16.0</avatica.version>
+
+        <!-- orm -->
         <mybatisplus.version>3.3.2</mybatisplus.version>
+
+        <!-- aop -->
         <aspectjweaver.version>1.9.4</aspectjweaver.version>
+
+        <!-- rpc -->
         <dubbo.version>2.7.0</dubbo.version>
         <nacos.registry.version>2.7.1</nacos.registry.version>
         <nacos.client.version>1.0.0</nacos.client.version>
+
+        <!--中间件-->
         <redis.version>2.1.5.RELEASE</redis.version>
         <activemq.version>2.1.5.RELEASE</activemq.version>
         <activemqpool.version>5.15.9</activemqpool.version>
+
         <!-- 日志版本 -->
         <slf4j.version>1.7.21</slf4j.version>
         <logback.version>1.2.3</logback.version>
-        <hutool.version>4.5.15</hutool.version>
+
+        <!-- 数据库连接池 -->
+        <hikaricp.version>3.4.5</hikaricp.version>
+        <c3p0.version>0.9.1.2</c3p0.version>
     </properties>
 
     <dependencyManagement>
 
         <dependencies>
+            <!-- 自定义包 -->
+            <dependency>
+                <groupId>com.py</groupId>
+                <artifactId>py-utils</artifactId>
+                <version>1.0-SNAPSHOT</version>
+            </dependency>
+
+            <!-- 插件jar -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+            </dependency>
+
+            <!-- 连接池依赖 -->
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>${hikaricp.version}</version>
+            </dependency>
+
+            <!-- 连接池 -->
+            <dependency>
+                <groupId>c3p0</groupId>
+                <artifactId>c3p0</artifactId>
+                <version>${c3p0.version}</version>
+            </dependency>
+
+            <!-- 日志门面依赖 -->
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
 
+            <!-- logback依赖 -->
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>${logback.version}</version>
-            </dependency>
-
-            <dependency>
-                <groupId>com.py</groupId>
-                <artifactId>py-utils</artifactId>
-                <version>1.0-SNAPSHOT</version>
             </dependency>
 
             <!-- active mq 消息中间件 -->
@@ -169,7 +211,7 @@
             <dependency>
                 <groupId>org.apache.calcite.avatica</groupId>
                 <artifactId>avatica-core</artifactId>
-                <version>1.16.0</version>
+                <version>${avatica.version}</version>
             </dependency>
 
             <!-- mybatis plus 依赖 -->
@@ -177,13 +219,6 @@
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatisplus.version}</version>
-            </dependency>
-
-            <!-- 插件jar -->
-            <dependency>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok</artifactId>
-                <version>${lombok.version}</version>
             </dependency>
 
         </dependencies>
