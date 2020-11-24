@@ -3,7 +3,7 @@ package com.py.algorithm.insertion;
 import java.util.Arrays;
 
 /**
- * description
+ * description：最坏情况，时间复杂度 O(n^2)
  *
  * @author pengyou@xiaomi.com
  * @version 1.0.0
@@ -19,15 +19,20 @@ public class InsertionMain {
     }
 
     public static void insertionSort(int[] arr) {
+        if (arr == null || arr.length == 1) {
+            return;
+        }
         for (int i = 1; i < arr.length; i++) {
             for (int j = i - 1; j >= 0 && arr[j] > arr[j + 1]; j--) {
                 // 交换
                 arr[j] = arr[j] ^ arr[j + 1];
                 arr[j + 1] = arr[j] ^ arr[j + 1];
                 arr[j] = arr[j] ^ arr[j + 1];
-//                int tmp = arr[j];
-//                arr[j] = arr[j + 1];
-//                arr[j + 1] = tmp;
+                /*
+                int tmp = arr[j];
+                arr[j] = arr[j + 1];
+                arr[j + 1] = tmp;
+                */
             }
         }
     }

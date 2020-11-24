@@ -3,7 +3,7 @@ package com.py.algorithm.bubbling;
 import java.util.Arrays;
 
 /**
- * description
+ * description：时间复杂度 O(n^2)
  *
  * @author pengyou@xiaomi.com
  * @version 1.0.0
@@ -25,6 +25,9 @@ public class BubbleMain {
      * @param arr 数组
      */
     public static void bubbleSort_1(int[] arr) {
+        if (arr == null || arr.length == 1) {
+            return;
+        }
         for (int i = arr.length - 1; i > 0; i--) {
             for (int j = 0; j < i; j++) {
                 if (arr[j] > arr[j + 1]) {
@@ -42,6 +45,9 @@ public class BubbleMain {
      * @param arr 数组
      */
     public static void bubbleSort_2(int[] arr) {
+        if (arr == null || arr.length == 1) {
+            return;
+        }
         for (int i = 0; i < arr.length; i++) {
             int minIndex = i;
             for (int j = i; j < arr.length; j++) {
