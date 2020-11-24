@@ -22,6 +22,7 @@
 
         <!-- 定时任务模块 -->
         <module>timing-schedule</module>
+        <module>algorithm</module>
     </modules>
 
     <parent>
