@@ -3,7 +3,7 @@ package com.py.algorithm.merge;
 import java.util.Arrays;
 
 /**
- * description：归并排序，递归版本
+ * description：归并排序，递归版本；时间复杂度：O(N*log2(N))；空间：O(N)
  * {4, 3, 2, 1}
  * 逻辑：把数组均分，0~1；2~3
  * 再均分0~0；1~1；2~2；3~3
@@ -26,16 +26,40 @@ public class MergeMain {
     public static void main(String[] args) {
         int[] arr = {4, 3, 2, 1};
         System.out.println(Arrays.toString(arr));
-        mergeSort(arr);
+//        mergeSort_1(arr);
+        mergeSort_2(arr);
         System.out.println(Arrays.toString(arr));
     }
 
     /**
-     * 归并排序
+     * 归并排序，非递归版本
      *
-     * @param arr
+     * @param arr 数组
      */
-    public static void mergeSort(int[] arr) {
+    public static void mergeSort_2(int[] arr) {
+        int size = 1, left, mid, right;
+        while (size < arr.length - 1) {
+            left = 0;
+            while (left + size <= arr.length - 1) {
+                mid = left + size - 1;
+                right = mid + size;
+                if (right > arr.length - 1) {
+                    right = arr.length - 1;
+                }
+                merge(arr, left, mid, right);
+                System.out.printf("每次合并的下标, left:%d, mid:%d, right: %d\n", left, mid, right);
+                left = right + 1;
+            }
+            size *= 2;
+        }
+    }
+
+    /**
+     * 归并排序，递归版本
+     *
+     * @param arr 数组
+     */
+    public static void mergeSort_1(int[] arr) {
         if (arr == null || arr.length < 2) {
             return;
         }
