@@ -93,7 +93,7 @@
     <logger level="DEBUG" name="org.hibernate.engine.query.HQLQueryPlan"/>
 
     <!--mybatis log configure-->
-    <logger level="TRACE" name="com.apache.ibatis"/>
+    <logger level="TRACE" name="org.apache.ibatis"/>
     <logger level="DEBUG" name="java.sql.Connection"/>
     <logger level="DEBUG" name="java.sql.Statement"/>
     <logger level="DEBUG" name="java.sql.PreparedStatement"/>
@@ -106,7 +106,7 @@
         </root>
 
         <!-- 本项目包路径的日志输出 -->
-        <logger name="com.py.web" level="DEBUG" additivity="false">
+        <logger name="com.py" level="DEBUG" additivity="false">
             <appender-ref ref="STDOUT"/>
         </logger>
     </springProfile>
@@ -119,12 +119,12 @@
             <appender-ref ref="FILE"/>
         </root>
         <!-- 为了把所有的日志汇总到 FILE 这个文件里面-->
-        <logger name="com.py.web" level="INFO" additivity="false">
+        <logger name="com.py" level="INFO" additivity="false">
             <appender-ref ref="FILE"/>
         </logger>
 
         <!-- 单独只输出项目中的日志 -->
-        <logger name="com.py.web" level="INFO" additivity="false">
+        <logger name="com.py" level="INFO" additivity="false">
             <appender-ref ref="STDOUT"/>
             <appender-ref ref="APP_FILE"/>
         </logger>
