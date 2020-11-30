@@ -12,24 +12,52 @@ import com.py.web.base.response.Result;
  */
 public class ResultUtils {
 
-    private static final String DEFAULT_SUCCESS_MESSAGE = "SUCCESS";
-
+    /**
+     * 不需要返回值的成功
+     *
+     * @return Result
+     */
     public static Result<Void> getSuccessResult() {
         return new Result<Void>()
                 .setCode(ResultCode.SUCCESS)
-                .setMessage(DEFAULT_SUCCESS_MESSAGE);
+                .setMessage(ResultCode.SUCCESS.message);
     }
 
+    /**
+     * 返回泛型数据
+     *
+     * @param data 数据
+     * @param <T>  任意类型
+     * @return Result
+     */
     public static <T> Result<T> getSuccessResult(T data) {
         return new Result<T>()
                 .setCode(ResultCode.SUCCESS)
-                .setMessage(DEFAULT_SUCCESS_MESSAGE)
+                .setMessage(ResultCode.SUCCESS.message)
                 .setData(data);
     }
 
+    /**
+     * 返回500，自定义信息
+     *
+     * @param message 信息
+     * @return Result
+     */
     public static Result<String> getFailResult(String message) {
         return new Result<String>()
-                .setCode(ResultCode.FAIL)
+                .setCode(ResultCode.INTERNAL_SERVER_ERROR)
                 .setMessage(message);
+    }
+
+    /**
+     * 从枚举里面获取定义好的错误信息
+     *
+     * @param resultCode 枚举code
+     * @return Result
+     */
+    public static Result<String> getFailResult(ResultCode resultCode) {
+        return new Result<String>()
+                .setCode(resultCode)
+                .setMessage(resultCode.message);
     }
 }

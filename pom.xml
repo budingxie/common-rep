@@ -233,6 +233,12 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
+        <!-- 工具包 -->
+        <dependency>
+            <groupId>com.py</groupId>
+            <artifactId>py-utils</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
