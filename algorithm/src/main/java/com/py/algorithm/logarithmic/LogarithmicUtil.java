@@ -11,6 +11,11 @@ import java.util.Arrays;
  */
 public class LogarithmicUtil {
 
+    public static void main(String[] args) {
+        int[] array = generateRandomArray(10, 20);
+        System.out.println(Arrays.toString(array));
+    }
+
     /**
      * 实现一个随机样本产生器
      *
@@ -33,6 +38,24 @@ public class LogarithmicUtil {
      */
     public static void comparator(int[] arr) {
         Arrays.sort(arr);
+    }
+
+    /**
+     * 求小和，绝对正确的方法
+     *
+     * @param arr
+     * @return
+     */
+    public static int smallSum(int[] arr) {
+        int sum = 0;
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < i; j++) {
+                if (arr[j] < arr[i]) {
+                    sum = sum + arr[j];
+                }
+            }
+        }
+        return sum;
     }
 
     /**

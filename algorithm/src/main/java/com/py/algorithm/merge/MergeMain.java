@@ -1,5 +1,7 @@
 package com.py.algorithm.merge;
 
+import com.py.algorithm.logarithmic.LogarithmicUtil;
+
 import java.util.Arrays;
 
 /**
@@ -24,11 +26,29 @@ import java.util.Arrays;
 public class MergeMain {
 
     public static void main(String[] args) {
-        int[] arr = {4, 3, 2, 1};
-        System.out.println(Arrays.toString(arr));
-//        mergeSort_1(arr);
-        mergeSort_2(arr);
-        System.out.println(Arrays.toString(arr));
+
+        for (int i = 0; i < 5000; i++) {
+            int[] arr = LogarithmicUtil.generateRandomArray(10, 100);
+            int[] arr0 = LogarithmicUtil.copyArray(arr);
+            int[] arr1 = LogarithmicUtil.copyArray(arr);
+            int[] arr2 = LogarithmicUtil.copyArray(arr);
+            LogarithmicUtil.comparator(arr0);
+            mergeSort_1(arr1);
+            mergeSort_2(arr2);
+            if (!LogarithmicUtil.isEqual(arr0, arr1)) {
+                System.out.println("arr0 not equal arr1 =========error");
+                System.out.println(Arrays.toString(arr));
+            }
+            if (!LogarithmicUtil.isEqual(arr0, arr2)) {
+                System.out.println("arr0 not equal arr2 =========error");
+                System.out.println(Arrays.toString(arr));
+            }
+            if (!LogarithmicUtil.isEqual(arr1, arr2)) {
+                System.out.println("arr1 not equal arr2 =========error");
+                System.out.println(Arrays.toString(arr));
+            }
+        }
+        System.out.println("finished");
     }
 
     /**
@@ -38,16 +58,15 @@ public class MergeMain {
      */
     public static void mergeSort_2(int[] arr) {
         int size = 1, left, mid, right;
-        while (size < arr.length - 1) {
+        while (size < arr.length) {
             left = 0;
-            while (left + size <= arr.length - 1) {
+            while (left + size < arr.length) {
                 mid = left + size - 1;
                 right = mid + size;
                 if (right > arr.length - 1) {
                     right = arr.length - 1;
                 }
                 merge(arr, left, mid, right);
-                System.out.printf("每次合并的下标, left:%d, mid:%d, right: %d\n", left, mid, right);
                 left = right + 1;
             }
             size *= 2;
