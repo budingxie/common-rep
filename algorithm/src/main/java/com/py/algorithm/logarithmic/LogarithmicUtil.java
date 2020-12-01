@@ -59,6 +59,24 @@ public class LogarithmicUtil {
     }
 
     /**
+     * 逆序对问题
+     *
+     * @param arr
+     * @return
+     */
+    public static int reverseSum(int[] arr) {
+        int sum = 0;
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = i + 1; j < arr.length; j++) {
+                if (arr[i] > arr[j]) {
+                    sum += 1;
+                }
+            }
+        }
+        return sum;
+    }
+
+    /**
      * 拷贝数组
      *
      * @param arr 原数组

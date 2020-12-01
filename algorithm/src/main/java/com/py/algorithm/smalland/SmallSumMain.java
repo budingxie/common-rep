@@ -23,10 +23,18 @@ public class SmallSumMain {
             int[] arr = LogarithmicUtil.generateRandomArray(10, 100 + i);
             int[] arr1 = LogarithmicUtil.copyArray(arr);
             int[] arr2 = LogarithmicUtil.copyArray(arr);
+            int[] arr3 = LogarithmicUtil.copyArray(arr);
+            int[] arr4 = LogarithmicUtil.copyArray(arr);
             int sum = smallSum(arr1);
             int absolute = LogarithmicUtil.smallSum(arr2);
             if (sum != absolute) {
                 System.out.println("sum not equal absolute =========error");
+                System.out.println(Arrays.toString(arr));
+            }
+            int reverseSum = reverseSum(arr3);
+            int absoluteReverseSum = LogarithmicUtil.reverseSum(arr4);
+            if (reverseSum != absoluteReverseSum) {
+                System.out.println("reverseSum not equal absoluteReverseSum =========error");
                 System.out.println(Arrays.toString(arr));
             }
         }
@@ -90,7 +98,43 @@ public class SmallSumMain {
      */
     public static int reverseSum(int[] arr) {
         int sum = 0;
-
+        int[] tmp = new int[arr.length];
+        int size = 1, left, mid, right;
+        while (size < arr.length) {
+            left = 0;
+            while (left + size < arr.length) {
+                mid = left + size - 1;
+                right = mid + size;
+                if (right > arr.length - 1) {
+                    right = arr.length - 1;
+                }
+                // start, 归并加速求逆序对
+                // left, mid; mid+1,right
+                int i = 0;
+                int p1 = left;
+                int p2 = mid + 1;
+                while (p1 <= mid && p2 <= right) {
+                    if (arr[p1] <= arr[p2]) {
+                        tmp[i++] = arr[p1++];
+                    } else {
+                        sum = sum + (mid - p1 + 1);
+                        tmp[i++] = arr[p2++];
+                    }
+                }
+                while (p1 <= mid) {
+                    tmp[i++] = arr[p1++];
+                }
+                while (p2 <= right) {
+                    tmp[i++] = arr[p2++];
+                }
+                for (i = 0; i < right - left + 1; i++) {
+                    arr[left + i] = tmp[i];
+                }
+                // end
+                left = right + 1;
+            }
+            size = size * 2;
+        }
         return sum;
     }
 }
