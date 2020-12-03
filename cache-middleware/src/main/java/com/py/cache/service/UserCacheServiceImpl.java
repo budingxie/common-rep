@@ -1,7 +1,7 @@
 package com.py.cache.service;
 
 import com.py.cache.remote.UserServiceRemote;
-import com.py.rpc.dto.UserRespDTO;
+import com.py.rpc.dto.UserDTO;
 import com.py.rpc.inf.UserCacheService;
 import org.apache.dubbo.config.annotation.Service;
 import org.springframework.cache.annotation.Cacheable;
@@ -23,7 +23,7 @@ public class UserCacheServiceImpl implements UserCacheService {
 
     @Override
     @Cacheable(value = "user", key = "#id")
-    public UserRespDTO findUserById(Long id) {
+    public UserDTO findUserById(Long id) {
         return userServiceRemote.findUserById(id);
     }
 

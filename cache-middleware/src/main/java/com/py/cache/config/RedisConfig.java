@@ -3,62 +3,126 @@ package com.py.cache.config;
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CachingConfigurerSupport;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.cache.RedisCacheWriter;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.serializer.Jackson2JsonRedisSerializer;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
+import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.*;
 
-import java.io.Serializable;
+import javax.annotation.Resource;
+import java.lang.reflect.Method;
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * description：缓存配置类
+ * EnableCaching：开启缓存支持
  *
  * @author pengyou@xiaomi.com
  * @version 1.0.0
  * @date 2020/10/26
  */
 @Configuration
-public class RedisConfig implements Serializable {
+@EnableCaching
+public class RedisConfig extends CachingConfigurerSupport {
 
     @Bean
     public RedisCacheManager cacheManager(RedisConnectionFactory redisConnectionFactory) {
-        return new RedisCacheManager(
-                RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory),
-                // 默认策略，未配置的 key 会使用这个
-                this.getRedisCacheConfigurationWithTtl( 60),
-                // 指定 key 策略
-                this.getRedisCacheConfigurationMap()
-        );
+        return RedisCacheManager.builder(redisConnectionFactory)
+                .cacheDefaults(RedisCacheConfiguration.defaultCacheConfig()
+                        .entryTtl(Duration.ofSeconds(10))
+                        .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer())))
+                .build();
     }
 
-    private Map<String, RedisCacheConfiguration> getRedisCacheConfigurationMap() {
-        //自定义设置缓存时间
-        Map<String, RedisCacheConfiguration> redisCacheConfigurationMap = new HashMap<>(16);
-        redisCacheConfigurationMap.put("user", this.getRedisCacheConfigurationWithTtl(60 * 60));
-        redisCacheConfigurationMap.put("other", this.getRedisCacheConfigurationWithTtl(60 *60));
-        return redisCacheConfigurationMap;
+
+    @Resource
+    private LettuceConnectionFactory lettuceConnectionFactory;
+
+    /**
+     * @return 自定义策略生成的key
+     * @description 自定义的缓存key的生成策略 若想使用这个key
+     * 只需要讲注解上keyGenerator的值设置为keyGenerator即可</br>
+     */
+    @Override
+    @Bean
+    public KeyGenerator keyGenerator() {
+        return new KeyGenerator() {
+            @Override
+            public Object generate(Object target, Method method, Object... params) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(target.getClass().getName());
+                sb.append(method.getDeclaringClass().getName());
+                Arrays.stream(params).map(Object::toString).forEach(sb::append);
+                return sb.toString();
+            }
+        };
     }
 
-    private RedisCacheConfiguration getRedisCacheConfigurationWithTtl(Integer seconds) {
+    /**
+     * RedisTemplate配置
+     *
+     * @param lettuceConnectionFactory
+     * @return
+     */
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate(LettuceConnectionFactory lettuceConnectionFactory) {
+        // 设置序列化
         Jackson2JsonRedisSerializer<Object> jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer<>(Object.class);
         ObjectMapper om = new ObjectMapper();
         om.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
         om.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
         jackson2JsonRedisSerializer.setObjectMapper(om);
-        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig();
-        redisCacheConfiguration = redisCacheConfiguration.serializeValuesWith(
-                RedisSerializationContext
-                        .SerializationPair
-                        .fromSerializer(jackson2JsonRedisSerializer)
-        ).entryTtl(Duration.ofSeconds(seconds));
-
-        return redisCacheConfiguration;
+        // 配置redisTemplate
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(lettuceConnectionFactory);
+        RedisSerializer<?> stringSerializer = new StringRedisSerializer();
+        // key序列化
+        redisTemplate.setKeySerializer(stringSerializer);
+        // value序列化
+        redisTemplate.setValueSerializer(jackson2JsonRedisSerializer);
+        // Hash key序列化
+        redisTemplate.setHashKeySerializer(stringSerializer);
+        // Hash value序列化
+        redisTemplate.setHashValueSerializer(jackson2JsonRedisSerializer);
+        redisTemplate.afterPropertiesSet();
+        return redisTemplate;
     }
+
+    /**
+     * 缓存配置管理器
+     *
+     * @param factory
+     * @return
+     */
+    @Bean
+    public CacheManager cacheManager(LettuceConnectionFactory factory) {
+        // 配置序列化（缓存默认有效期 6小时）
+        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofHours(6));
+        RedisCacheConfiguration redisCacheConfiguration = config.serializeKeysWith(RedisSerializationContext.SerializationPair.fromSerializer(new StringRedisSerializer()))
+                .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+
+        // 以锁写入的方式创建RedisCacheWriter对象
+        //RedisCacheWriter writer = RedisCacheWriter.lockingRedisCacheWriter(factory);
+        // 创建默认缓存配置对象
+        /* 默认配置，设置缓存有效期 1小时*/
+        //RedisCacheConfiguration defaultCacheConfig = RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofHours(1));
+        /* 自定义配置test:demo 的超时时间为 5分钟*/
+        RedisCacheManager cacheManager = RedisCacheManager.builder(RedisCacheWriter.lockingRedisCacheWriter(factory)).cacheDefaults(redisCacheConfiguration)
+                .withInitialCacheConfigurations(
+                        Collections.singletonMap("CacheConstant.TEST_DEMO_CACHE",
+                                RedisCacheConfiguration.defaultCacheConfig().entryTtl(Duration.ofMinutes(5)).disableCachingNullValues())
+                ).transactionAware().build();
+        return cacheManager;
+    }
+
 }
