@@ -12,7 +12,7 @@ import org.slf4j.MDC;
 import java.util.Arrays;
 
 /**
- * description
+ * description：dubbo接口统一进行拦截，记录访问信息
  *
  * @author pengyou@xiaomi.com
  * @version 1.0.0
@@ -29,6 +29,9 @@ public class GlobalServiceFilter implements Filter {
     @Override
     public Result invoke(Invoker<?> invoker, Invocation invocation) throws RpcException {
         Result result = null;
+        RpcContext context = RpcContext.getContext();
+        String uniqueId = context.getAttachment("uniqueId");
+
         MDC.put(UtilTrace.MDC_TRACE_ID, UtilTrace.get());
 
         msgLogger.info("IP:{}, Service:{}, Method:{}, Request:{}.",

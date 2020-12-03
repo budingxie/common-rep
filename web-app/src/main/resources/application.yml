@@ -26,3 +26,4 @@ dubbo:
     #设置超时时间
     timeout: 3000
     check: false
+    retries: 0

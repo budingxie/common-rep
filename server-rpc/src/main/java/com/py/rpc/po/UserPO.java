@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * description：数据库实体类
+ * description：PO结尾的对象，是数据库中对应的表
  *
  * @author pengyou@xiaomi.com
  * @version 1.0.0
@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserPOJO implements Serializable {
+public class UserPO implements Serializable {
 
     private static final long serialVersionUID = -5315617693305084123L;
 

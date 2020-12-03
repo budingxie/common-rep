@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serializable;
 
 /**
- * description
+ * description：DTO结尾的对象，用来返回数据
  *
  * @author pengyou@xiaomi.com
  * @version 1.0.0
@@ -16,7 +16,7 @@ import java.io.Serializable;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRespDTO implements Serializable {
+public class UserDTO implements Serializable {
 
     private static final long serialVersionUID = 2375788693489587143L;
 
@@ -29,15 +29,4 @@ public class UserRespDTO implements Serializable {
     private String sex;
 
     private String email;
-
-    @Override
-    public String toString() {
-        return "UserRespDTO{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", age=" + age +
-                ", sex='" + sex + '\'' +
-                ", email='" + email + '\'' +
-                '}';
-    }
 }

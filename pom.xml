@@ -53,6 +53,9 @@
 
         <!-- orm -->
         <mybatisplus.version>3.3.2</mybatisplus.version>
+        <mapstruct.version>1.4.0.Beta3</mapstruct.version>
+        <!-- 分页插件可能会和mybatisplus产生冲突，应该版本对应 -->
+        <pagehelper.version>1.2.13</pagehelper.version>
 
         <!-- aop -->
         <aspectjweaver.version>1.9.4</aspectjweaver.version>
@@ -91,6 +94,13 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
+            </dependency>
+
+            <!-- 对象copy赋值 -->
+            <dependency>
+                <groupId>org.mapstruct</groupId>
+                <artifactId>mapstruct</artifactId>
+                <version>${mapstruct.version}</version>
             </dependency>
 
             <!-- 连接池依赖 -->
@@ -222,6 +232,13 @@
                 <version>${mybatisplus.version}</version>
             </dependency>
 
+            <!-- pagehelper -->
+            <dependency>
+                <groupId>com.github.pagehelper</groupId>
+                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <version>${pagehelper.version}</version>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 
@@ -231,6 +248,12 @@
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+        </dependency>
+
+        <!-- 对象copy -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
         </dependency>
 
         <!-- 工具包 -->
@@ -252,6 +275,19 @@
                     <target>1.8</target>
                     <!-- 设置编码为 UTF-8 -->
                     <encoding>UTF-8</encoding>
+
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.mapstruct</groupId>
+                            <artifactId>mapstruct-processor</artifactId>
+                            <version>${mapstruct.version}</version>
+                        </path>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
                 </configuration>
             </plugin>
         </plugins>

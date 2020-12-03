@@ -43,10 +43,11 @@ public class ResultUtils {
      * @param message 信息
      * @return Result
      */
-    public static Result<String> getFailResult(String message) {
-        return new Result<String>()
+    public static <T> Result<T> getFailResult(String message, T data) {
+        return new Result<T>()
                 .setCode(ResultCode.INTERNAL_SERVER_ERROR)
-                .setMessage(message);
+                .setMessage(message)
+                .setData(data);
     }
 
     /**
@@ -55,9 +56,10 @@ public class ResultUtils {
      * @param resultCode 枚举code
      * @return Result
      */
-    public static Result<String> getFailResult(ResultCode resultCode) {
-        return new Result<String>()
+    public static <T> Result<T> getFailResult(ResultCode resultCode, T data) {
+        return new Result<T>()
                 .setCode(resultCode)
-                .setMessage(resultCode.message);
+                .setMessage(resultCode.message)
+                .setData(data);
     }
 }

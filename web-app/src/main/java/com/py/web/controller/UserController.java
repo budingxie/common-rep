@@ -1,15 +1,16 @@
 package com.py.web.controller;
 
-import com.py.rpc.dto.UserReqDTO;
-import com.py.rpc.dto.UserRespDTO;
+import com.py.rpc.dto.PageableDTO;
+import com.py.rpc.dto.UserDTO;
+import com.py.web.bo.UserReqBO;
 import com.py.web.remote.UserCacheServiceRemote;
 import com.py.web.remote.UserServiceRemote;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 /**
@@ -21,6 +22,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/user")
+@Validated
 public class UserController {
 
     @Resource
@@ -30,28 +32,31 @@ public class UserController {
     private UserCacheServiceRemote userCacheServiceRemote;
 
     @GetMapping(value = "/users")
-    public List<UserRespDTO> users() {
-        return userServiceRemote.findUsers();
+    public PageableDTO<List<UserDTO>> users(@Min(value = 1, message = "起始页必须大于0") Integer pageNum,
+                                            @Min(value = 1, message = "每页条数必须大于0") Integer pageSize) {
+        return userServiceRemote.findUsers(pageNum, pageSize);
     }
 
     @GetMapping("/id")
-    public UserRespDTO findUserById(Long id) {
+    public UserDTO findUserById(Long id) {
         return userCacheServiceRemote.findUserById(id);
     }
 
-    @GetMapping("/save")
-    public void saveUser(@RequestBody UserReqDTO userReqDTO) {
-
+    @PostMapping("/add")
+    public Boolean addUser(@RequestBody
+                           @Validated UserReqBO userReqBO) {
+        return userServiceRemote.addUser(userReqBO);
     }
 
-    @GetMapping("/edit")
-    public void editUser(List<Long> uIds) {
-
+    @PostMapping("/edit")
+    public Boolean editUser(@RequestBody
+                            @Validated UserReqBO userReqBO) {
+        return userServiceRemote.editUser(userReqBO);
     }
 
-    @GetMapping("/del")
-    public void delUser(List<Long> uIds) {
-
+    @PostMapping(value = "/del", produces = MediaType.APPLICATION_JSON_VALUE)
+    public Boolean delUser(@RequestBody List<Long> ids) {
+        return userServiceRemote.delUser(ids);
     }
 
 }

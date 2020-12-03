@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
+import java.util.Objects;
+
 /**
  * description：返回结果统一格式
  *
@@ -29,7 +31,7 @@ public class GlobalReturnConfig {
     static class ResultResponseAdvice implements ResponseBodyAdvice<Object> {
         @Override
         public boolean supports(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> aClass) {
-            Class<?> type = methodParameter.getMethod().getReturnType();
+            Class<?> type = Objects.requireNonNull(methodParameter.getMethod()).getReturnType();
             boolean hasStr = type.isAssignableFrom(String.class);
             boolean hasResult = type.isAssignableFrom(Result.class);
             return !hasStr && !hasResult;

@@ -1,5 +1,6 @@
 package com.py.web.base.global;
 
+import com.py.web.base.enums.ResultCode;
 import com.py.web.base.response.Result;
 import com.py.web.base.utils.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -23,14 +24,14 @@ import javax.servlet.http.HttpServletResponse;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler
-    public Result<String> handleException(HttpServletRequest request, HttpServletResponse response, final Exception ex) {
+    public Result<Exception> handleException(HttpServletRequest request, HttpServletResponse response, final Exception ex) {
         log.error("path:{},errorMsg:{}", request.getServletPath(), ex.getMessage(), ex);
-        return ResultUtils.getFailResult("未知");
+        return ResultUtils.getFailResult(ResultCode.INTERNAL_SERVER_ERROR, ex);
     }
 
     @ExceptionHandler(value = {NullPointerException.class})
-    public Result<String> nullPointerEx(HttpServletRequest request, NullPointerException ex) {
+    public Result<Exception> nullPointerEx(HttpServletRequest request, NullPointerException ex) {
         log.error("path:{},errorMsg:{}", request.getServletPath(), ex.getMessage());
-        return ResultUtils.getFailResult(ex.getMessage());
+        return ResultUtils.getFailResult(ResultCode.NULL_POINTER_ERROR, ex);
     }
 }

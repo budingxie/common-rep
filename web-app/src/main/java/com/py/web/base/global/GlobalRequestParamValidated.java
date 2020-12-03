@@ -1,5 +1,6 @@
 package com.py.web.base.global;
 
+import com.py.web.base.enums.ResultCode;
 import com.py.web.base.response.Result;
 import com.py.web.base.utils.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
 import java.util.Objects;
 
 /**
@@ -28,6 +30,21 @@ import java.util.Objects;
 public class GlobalRequestParamValidated {
 
     /**
+     * 违反参数约定异常
+     *
+     * @param request 请求
+     * @param ex      异常
+     * @return
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @ExceptionHandler(ConstraintViolationException.class)
+    public Result<String> handleServiceException(HttpServletRequest request, ConstraintViolationException ex) {
+        log.error("path:{},errorMsg:{}", request.getServletPath(), ex.getMessage());
+        String message = ex.getMessage();
+        return ResultUtils.getFailResult(ResultCode.PARAMETER_ERROR, message);
+    }
+
+    /**
      * 表单参数校验
      *
      * @param request
@@ -39,8 +56,8 @@ public class GlobalRequestParamValidated {
     public Result<String> bindEx(HttpServletRequest request, BindException ex) {
         log.error("path:{},errorMsg:{}", request.getServletPath(), ex.getMessage());
         BindingResult bindingResult = ex.getBindingResult();
-        String message = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-        return ResultUtils.getFailResult(message);
+        String errorData = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+        return ResultUtils.getFailResult(ResultCode.PARAMETER_ERROR, errorData);
     }
 
     /**
@@ -55,7 +72,7 @@ public class GlobalRequestParamValidated {
     public Result<String> bindEx(HttpServletRequest request, MethodArgumentNotValidException ex) {
         log.error("path:{},errorMsg:{}", request.getServletPath(), ex.getMessage());
         BindingResult bindingResult = ex.getBindingResult();
-        String message = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
-        return ResultUtils.getFailResult(message);
+        String errorData = Objects.requireNonNull(bindingResult.getFieldError()).getDefaultMessage();
+        return ResultUtils.getFailResult(ResultCode.PARAMETER_ERROR, errorData);
     }
 }

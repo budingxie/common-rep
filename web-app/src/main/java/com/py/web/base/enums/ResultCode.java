@@ -15,7 +15,10 @@ public enum ResultCode {
     // 失败
     FAIL(400, "请求错误"),
 
-    // 未认证（签名错误）
+    // 请求参数错误
+    PARAMETER_ERROR(400, "请求参数有误"),
+
+    // 未认证（签名错误）,
     UNAUTHORIZED(401, "权限错误"),
 
     // 接口不存在
@@ -25,7 +28,11 @@ public enum ResultCode {
     INTERNAL_SERVER_ERROR(500, "服务器内部错误"),
 
     // 如使用put方式，访问接口，而接口支持post
-    NOT_IMPLEMENTED(501, "请求方式未实现");
+    NOT_IMPLEMENTED(501, "请求方式未实现"),
+
+    // 空指针错误
+    NULL_POINTER_ERROR(502, "空指针错误");
+
 
     public int code;
 

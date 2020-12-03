@@ -1,6 +1,6 @@
 package com.py;
 
-import com.py.rpc.dto.UserRespDTO;
+import com.py.rpc.dto.UserDTO;
 import com.py.rpc.inf.UserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,7 +26,7 @@ public class UserServiceImplTest {
 
     @Test
     public void findUsers() {
-        List<UserRespDTO> users = userService.findUsers();
-        System.out.println(users);
+//        List<UserDTO> users = userService.findUsers();
+//        System.out.println(users);
     }
 }

@@ -1,6 +1,6 @@
 package com.py.web.remote;
 
-import com.py.rpc.dto.UserRespDTO;
+import com.py.rpc.dto.UserDTO;
 import com.py.rpc.inf.UserCacheService;
 import org.apache.dubbo.config.annotation.Reference;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class UserCacheServiceRemote {
     @Reference(check = false, timeout = 3000, interfaceClass = UserCacheService.class)
     private UserCacheService userCacheService;
 
-    public UserRespDTO findUserById(Long id) {
+    public UserDTO findUserById(Long id) {
         return userCacheService.findUserById(id);
     }
 }
