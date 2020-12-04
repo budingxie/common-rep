@@ -2,7 +2,7 @@ package com.py.web.base.global;
 
 import com.py.web.base.enums.ResultCode;
 import com.py.web.base.response.Result;
-import com.py.web.base.utils.ResultUtils;
+import com.py.web.base.response.ResultUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;

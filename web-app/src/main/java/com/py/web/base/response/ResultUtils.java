@@ -1,7 +1,6 @@
-package com.py.web.base.utils;
+package com.py.web.base.response;
 
 import com.py.web.base.enums.ResultCode;
-import com.py.web.base.response.Result;
 
 /**
  * description：统一返回工具类

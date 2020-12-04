@@ -18,7 +18,7 @@ public enum ResultCode {
     // 请求参数错误
     PARAMETER_ERROR(400, "请求参数有误"),
 
-    // 未认证（签名错误）,
+    // 未认证(签名错误)
     UNAUTHORIZED(401, "权限错误"),
 
     // 接口不存在

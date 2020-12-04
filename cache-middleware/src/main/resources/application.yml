@@ -4,6 +4,8 @@ server:
 spring:
   application:
     name: cache-middleware
+  profiles:
+    active: dev
   main:
     #解决Bean重复定义问题，dubbo版本和springboot版本问题
     allow-bean-definition-overriding: true
@@ -17,6 +19,9 @@ spring:
     port: 6379
     #使用的数据库
     database: 0
+    lettuce:
+      pool:
+        max-idle: 8
 
 dubbo:
   #配置服务信息

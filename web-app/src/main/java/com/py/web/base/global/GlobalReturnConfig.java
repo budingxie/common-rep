@@ -1,7 +1,7 @@
 package com.py.web.base.global;
 
 import com.py.web.base.response.Result;
-import com.py.web.base.utils.ResultUtils;
+import com.py.web.base.response.ResultUtils;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.MethodParameter;
 import org.springframework.core.annotation.Order;
@@ -29,6 +29,14 @@ public class GlobalReturnConfig {
 
     @RestControllerAdvice
     static class ResultResponseAdvice implements ResponseBodyAdvice<Object> {
+
+        /**
+         * 当返回值为true的时候，返回结果的时候，才执行beforeBodyWrite()方法
+         *
+         * @param methodParameter
+         * @param aClass
+         * @return
+         */
         @Override
         public boolean supports(MethodParameter methodParameter, Class<? extends HttpMessageConverter<?>> aClass) {
             Class<?> type = Objects.requireNonNull(methodParameter.getMethod()).getReturnType();
@@ -37,6 +45,17 @@ public class GlobalReturnConfig {
             return !hasStr && !hasResult;
         }
 
+        /**
+         * 统一返回格式
+         *
+         * @param body
+         * @param methodParameter
+         * @param mediaType
+         * @param aClass
+         * @param serverHttpRequest
+         * @param serverHttpResponse
+         * @return
+         */
         @Override
         public Object beforeBodyWrite(Object body, MethodParameter methodParameter, MediaType mediaType, Class<? extends HttpMessageConverter<?>> aClass, ServerHttpRequest serverHttpRequest, ServerHttpResponse serverHttpResponse) {
             return ResultUtils.getSuccessResult(body);

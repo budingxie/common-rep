@@ -1,4 +1,4 @@
-package com.py.web.model;
+package com.py.web.bo;
 
 import lombok.Data;
 
@@ -31,7 +31,7 @@ import java.io.Serializable;
 // ========
 
 /**
- * description:
+ * description：todo 删除
  *
  * @author pengyou@xiaomi.com
  * @version 1.0.0

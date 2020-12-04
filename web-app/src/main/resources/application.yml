@@ -6,6 +6,10 @@ spring:
   main:
     #解决Bean重复定义问题，dubbo版本和springboot版本问题
     allow-bean-definition-overriding: true
+  # 解决 NoHandlerFoundException 捕获不到问题
+  mvc:
+   throw-exception-if-no-handler-found: true
+   static-path-pattern: /statics/**
 
 server:
   #服务端口

@@ -3,7 +3,6 @@ package com.py.web.controller;
 import com.py.rpc.dto.PageableDTO;
 import com.py.rpc.dto.UserDTO;
 import com.py.web.bo.UserReqBO;
-import com.py.web.remote.UserCacheServiceRemote;
 import com.py.web.remote.UserServiceRemote;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -28,9 +27,6 @@ public class UserController {
     @Resource
     private UserServiceRemote userServiceRemote;
 
-    @Resource
-    private UserCacheServiceRemote userCacheServiceRemote;
-
     @GetMapping(value = "/users")
     public PageableDTO<List<UserDTO>> users(@Min(value = 1, message = "起始页必须大于0") Integer pageNum,
                                             @Min(value = 1, message = "每页条数必须大于0") Integer pageSize) {
@@ -39,7 +35,7 @@ public class UserController {
 
     @GetMapping("/id")
     public UserDTO findUserById(Long id) {
-        return userCacheServiceRemote.findUserById(id);
+        return userServiceRemote.findUserById(id);
     }
 
     @PostMapping("/add")

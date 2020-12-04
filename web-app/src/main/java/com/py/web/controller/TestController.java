@@ -1,13 +1,13 @@
 package com.py.web.controller;
 
 import com.py.web.base.response.Result;
-import com.py.web.base.utils.ResultUtils;
-import com.py.web.model.User;
+import com.py.web.base.response.ResultUtils;
+import com.py.web.bo.User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * description
+ * description：todo 删除
  *
  * @author pengyou@xiaomi.com
  * @version 1.0.0

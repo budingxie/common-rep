@@ -36,7 +36,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public PageableDTO<List<UserDTO>> findUsers(Integer pageNum, Integer pageSize) {
-        System.out.println("=========" + allMapper);
         int start = (pageNum - 1) * pageSize;
         // 分页插件
         PageHelper.startPage(start, pageSize);

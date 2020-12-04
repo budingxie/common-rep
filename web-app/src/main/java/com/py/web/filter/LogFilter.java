@@ -11,7 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 /**
- * description
+ * description：统一拦截，添加日志追踪trace_id，记录访问接口耗时
  *
  * @author pengyou
  * @version 1.0.0
@@ -27,19 +27,26 @@ public class LogFilter implements Filter {
         MDC.put(UtilTrace.MDC_TRACE_ID, traceId);
         try {
             HttpServletRequest request = (HttpServletRequest) servletRequest;
+            String uri = request.getRequestURI();
             // 请求进入时间
             long start = System.currentTimeMillis();
             log.info("[Api Access] start. id: {}, uri: {}, method: {}, client: {}, server: {}", traceId,
-                    request.getRequestURI(), request.getMethod(), getReqIp(request), UtilIp.getRealIp());
+                    uri, request.getMethod(), getReqIp(request), UtilIp.getRealIp());
             //执行
             filterChain.doFilter(servletRequest, servletResponse);
-            log.info("[Api Access]   end. id: {}, duration: {}ms", traceId,
+            log.info("[Api Access]   end. id: {}, uri: {}, duration: {} ms", traceId, uri,
                     System.currentTimeMillis() - start);
         } finally {
             MDC.remove(UtilTrace.MDC_TRACE_ID);
         }
     }
 
+    /**
+     * 获取请求机器的ip
+     *
+     * @param request
+     * @return
+     */
     private static String getReqIp(HttpServletRequest request) {
         String un = "unknown";
         String ip = request.getHeader("x-forwarded-for");
