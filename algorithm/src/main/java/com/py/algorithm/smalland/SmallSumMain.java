@@ -69,6 +69,9 @@ public class SmallSumMain {
      * @return 小和
      */
     public static int smallSum(int[] arr) {
+        if (arr == null) {
+            return 0;
+        }
         int sum = 0;
         int[] tmp = new int[arr.length];
         int size = 1, left, mid, right;
@@ -118,6 +121,9 @@ public class SmallSumMain {
      * @return 逆序对个数
      */
     public static int reverseSum(int[] arr) {
+        if (arr == null) {
+            return 0;
+        }
         int sum = 0;
         int[] tmp = new int[arr.length];
         int size = 1, left, mid, right;
@@ -160,6 +166,9 @@ public class SmallSumMain {
     }
 
     public static int[] dutchFlag(int[] arr, int num) {
+        if (arr == null || arr.length < 2) {
+            return arr;
+        }
         int left = -1, right = arr.length, i = 0, tmp;
         while (i < right) {
             if (arr[i] < num) {

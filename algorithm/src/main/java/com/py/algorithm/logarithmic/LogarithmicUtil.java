@@ -47,6 +47,9 @@ public class LogarithmicUtil {
      * @return
      */
     public static int smallSum(int[] arr) {
+        if (arr == null) {
+            return 0;
+        }
         int sum = 0;
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < i; j++) {
@@ -65,6 +68,9 @@ public class LogarithmicUtil {
      * @return
      */
     public static int reverseSum(int[] arr) {
+        if (arr == null) {
+            return 0;
+        }
         int sum = 0;
         for (int i = 0; i < arr.length; i++) {
             for (int j = i + 1; j < arr.length; j++) {
@@ -77,6 +83,9 @@ public class LogarithmicUtil {
     }
 
     public static int[] dutchFlag(int[] arr, int num) {
+        if (arr == null || arr.length < 2) {
+            return arr;
+        }
         int[] tmp = new int[arr.length];
         int m = -1;
         int n = arr.length;
