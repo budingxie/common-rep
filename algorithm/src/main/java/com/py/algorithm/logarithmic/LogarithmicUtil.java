@@ -76,6 +76,26 @@ public class LogarithmicUtil {
         return sum;
     }
 
+    public static int[] dutchFlag(int[] arr, int num) {
+        int[] tmp = new int[arr.length];
+        int m = -1;
+        int n = arr.length;
+        for (int i = 0; i < arr.length; i++) {
+            if (arr[i] < num) {
+                tmp[++m] = arr[i];
+            } else if (arr[i] > num) {
+                tmp[--n] = arr[i];
+            }
+        }
+        for (int j = m + 1; j < n; j++) {
+            tmp[j] = arr[j];
+        }
+        for (int k = 0; k < tmp.length; k++) {
+            arr[k] = tmp[k];
+        }
+        return new int[]{m + 1, n - 1};
+    }
+
     /**
      * 拷贝数组
      *

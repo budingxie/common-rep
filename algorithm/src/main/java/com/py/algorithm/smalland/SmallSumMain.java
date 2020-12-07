@@ -3,6 +3,7 @@ package com.py.algorithm.smalland;
 import com.py.algorithm.logarithmic.LogarithmicUtil;
 
 import java.util.Arrays;
+import java.util.Random;
 
 /**
  * description：
@@ -11,6 +12,9 @@ import java.util.Arrays;
  * <p>
  * 逆序对问题
  * 给一列数a1,a2,…,an，求它的逆序对数，即有多少个有序对(i,j)，使得 i < j 但 ai > aj。
+ * <p>
+ * 荷兰国旗问题
+ * 给定一个数组，一个数num，把数组中小于num放在左边，等于num放在中间，大于num的放在右边；最后返回等于区域的左右下标
  *
  * @author pengyou@xiaomi.com
  * @version 1.0.0
@@ -19,23 +23,40 @@ import java.util.Arrays;
 public class SmallSumMain {
 
     public static void main(String[] args) {
+
+        Random random = new Random();
         for (int i = 0; i < 5000; i++) {
             int[] arr = LogarithmicUtil.generateRandomArray(10, 100 + i);
             int[] arr1 = LogarithmicUtil.copyArray(arr);
             int[] arr2 = LogarithmicUtil.copyArray(arr);
             int[] arr3 = LogarithmicUtil.copyArray(arr);
             int[] arr4 = LogarithmicUtil.copyArray(arr);
+            int[] arr5 = LogarithmicUtil.copyArray(arr);
+            int[] arr6 = LogarithmicUtil.copyArray(arr);
+            // 小和问题
             int sum = smallSum(arr1);
             int absolute = LogarithmicUtil.smallSum(arr2);
             if (sum != absolute) {
                 System.out.println("sum not equal absolute =========error");
                 System.out.println(Arrays.toString(arr));
             }
+            // 逆序对问题
             int reverseSum = reverseSum(arr3);
             int absoluteReverseSum = LogarithmicUtil.reverseSum(arr4);
             if (reverseSum != absoluteReverseSum) {
                 System.out.println("reverseSum not equal absoluteReverseSum =========error");
                 System.out.println(Arrays.toString(arr));
+            }
+            // 荷兰国旗问题
+            int num = random.nextInt();
+            int[] du1 = LogarithmicUtil.dutchFlag(arr5, num);
+            int[] du2 = dutchFlag(arr6, num);
+            if (!LogarithmicUtil.isEqual(du1, du2)) {
+                System.out.println("dutchFlag =========error");
+                System.out.println("num: " + num);
+                System.out.println(Arrays.toString(arr));
+                System.out.println(Arrays.toString(du1));
+                System.out.println(Arrays.toString(du2));
             }
         }
         System.out.println("finished");
@@ -136,5 +157,26 @@ public class SmallSumMain {
             size = size * 2;
         }
         return sum;
+    }
+
+    public static int[] dutchFlag(int[] arr, int num) {
+        int left = -1, right = arr.length, i = 0, tmp;
+        while (i < right) {
+            if (arr[i] < num) {
+                ++left;
+                tmp = arr[left];
+                arr[left] = arr[i];
+                arr[i] = tmp;
+                i++;
+            } else if (arr[i] == num) {
+                i++;
+            } else if (arr[i] > num) {
+                --right;
+                tmp = arr[right];
+                arr[right] = arr[i];
+                arr[i] = tmp;
+            }
+        }
+        return new int[]{left + 1, right - 1};
     }
 }
