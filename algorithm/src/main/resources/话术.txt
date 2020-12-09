@@ -54,9 +54,17 @@ AQS锁：aqs是AbstractQueuedSynchronizer抽象类相当于一个模板类，提
 	使用compareAndSetState将state修改为1，成功相当于获取到锁，并且设置锁拥有线程为当前线程。修改1失败，再次尝试tryAcquire(1)(可能修改的失败之后的一瞬间，有锁释放，所以再次调用tryAcquire(1)进行尝试，但是会先判断state是否为0)；公平下：查看有其他线程比我等待时间长吗(长，就不再尝试修改state)?；非公平下，再次尝试修改state。如果都没成功，然后调用acquireQueued方法，再调addWaiter加入同步队列(cas原子操作)。后面操作就是acquireQueued方法进行，自旋获取prev节点，判断是否是head节点，不是则park(操作系统上的阻塞)；是头节点，再次尝试修改state，如果修改不成功，则进行头节点.prev还是自己，再次自旋修改状态state。
 	
 	unlock()：释放锁。
-	没有公平、非公平之分。对当前state进行 减一 ，然后判断state是否为0，是则，把锁的拥有者线程设置为null，返回true，进行唤醒头节点的next，upark head的next操作；不为0，说明拥有锁的线程加了多次锁，这个时候次数减一了，但是锁的拥有线程不设置为null，且返回false。
+	没有公平、非公平之分。对当前state进行 减一 ，然后判断state是否为0，是则，把锁的拥有者线程设置为null，返回true，进行唤醒头节点的next，unPark head的next操作；不为0，说明拥有锁的线程加了多次锁，这个时候次数减一了，但是锁的拥有线程不设置为null，且返回false。
 	
-线程池：
+线程池：new ThreadPoolExecutor(int corePoolSize,
+                                     int maximumPoolSize,
+                                     long keepAliveTime,
+                                     TimeUnit unit,
+                                     BlockingQueue<Runnable> workQueue,
+                                     ThreadFactory threadFactory,
+                                     RejectedExecutionHandler handler);
+        allowCoreThreadTimeOut(true)：设置是否允许核心线程超时。
+
 	相对于自己创建线程的优势：
 	1.降低线程创建和销毁的线程的资源消耗，提高了响应速度(免去了创建、销毁时间)
 	2.统一管理的线程
@@ -70,9 +78,10 @@ AQS锁：aqs是AbstractQueuedSynchronizer抽象类相当于一个模板类，提
 	
 	拒绝策略：
 	线程里面提供的
-	1.DiscardPolicy：直接丢弃任务
-	2.DiscardOldestPolicy：丢弃任务队列中比较久的任务
-	3.CallerRunsPolicy：使用调用者线程执行
+	1.AbortPolicy：抛出异常(RejectedExecutionException)
+	2.DiscardPolicy：直接丢弃任务
+	3.DiscardOldestPolicy：丢弃任务队列中比较久的任务
+	4.CallerRunsPolicy：使用调用者线程执行
 	还可以实现：RejectedExecutionHandler接口进行自定义的拒绝策略
 	
 	参数解析：
