@@ -5,7 +5,7 @@ HashMap：
 	
 	3.put：检查table数组是否为null(为null进行初始化)，通过key的 (hashCode值 ^ (hashCode值>>>16) 得到的hash值) 和(容量-1)进行 & 操作，找到对应的数组下标。如果对应位置不存在节点，放入节点，最后判断元素的个数size和阈值进行的大小，检查是否需要扩容。如果对应位置存在节点，先检查是否是同一个key(先判断key==，再判断equals)，是的话覆盖旧值；不是的话，再判断该位置的节点是否是 TreeNode(树的插入，或者替换)。都不是的话(Node链表)，进行插入或者替换，再判断链表中节点的个数(大于8个)，如果大于(再判断容量和64比较，决定是扩容，还是转成树)。最后if (++size > threshold)是否扩容(可能造成树退化成链表)，找到最后面一段位置变动相同的头节点。
 	
-	4.get：通过key的 (hashCode值 ^ (hashCode值>>>16) 得到的hash值) 和(容量-1)进行 & 操作，找到对应的数组下标，拿到对应的Node检查Node的key是否和传入的一致(==,eques)是就返回。不是，再检查当前节点Node是否是TreeNode(是，进行树的查找)。否则就是链表查找。
+	4.get：通过key的 (hashCode值 ^ (hashCode值>>>16) 得到的hash值) 和(容量-1)进行 & 操作，找到对应的数组下标，拿到对应的Node检查Node的key是否和传入的一致(==,equals)是就返回。不是，再检查当前节点Node是否是TreeNode(是，进行树的查找)。否则就是链表查找。
 	
 
 ConcurrentHashMap：
@@ -31,8 +31,25 @@ ConcurrentHashMap：
 CAS锁：比较交换，java里面通过unsafe类去实现调用，是cpu上的原子指令，实现方式基于硬件平台的汇编指令。cpu通过 总线锁、缓存锁 来保证原子性。
 
 AQS锁：aqs是AbstractQueuedSynchronizer抽象类相当于一个模板类，提供一个先进先出等待队列的阻塞锁和相关同步器。具体实现有 ReentrantLock、Semaphore、ReentrantReadWriteLock、CountDownLatch。
+	属性：
+	    Node head
+	    Node tail
+
 	举例：
 	ReentrantLock里面的FairSync(公平同步)、NonfairSync(非公平同步锁，默认使用)，
+
+	Node 节点属性：
+	    pre
+	    next
+	    waitStatus
+	    thread
+
+	形成的样子
+	AQS
+	head(pre->自己) --> Node --> Node <---tail(next->null)
+	                        <--
+
+
 	lock()：方法获取锁
 	使用compareAndSetState将state修改为1，成功相当于获取到锁，并且设置锁拥有线程为当前线程。修改1失败，再次尝试tryAcquire(1)(可能修改的失败之后的一瞬间，有锁释放，所以再次调用tryAcquire(1)进行尝试，但是会先判断state是否为0)；公平下：查看有其他线程比我等待时间长吗(长，就不再尝试修改state)?；非公平下，再次尝试修改state。如果都没成功，然后调用acquireQueued方法，再调addWaiter加入同步队列(cas原子操作)。后面操作就是acquireQueued方法进行，自旋获取prev节点，判断是否是head节点，不是则park(操作系统上的阻塞)；是头节点，再次尝试修改state，如果修改不成功，则进行头节点.prev还是自己，再次自旋修改状态state。
 	
