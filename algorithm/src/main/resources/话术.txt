@@ -129,6 +129,10 @@ JVM：
 		Bootstrap：加载java_home/lib下的类
 		Extension：加载java_home/lib/ext下的类
 		Application：自己开发的类
+
+    常说：某个类加载器不能加载 该类时，给父类加载器(这个父类加载器不是通过继承的形式，类似与 类加载器里面有个   属性为parent 引用 高级别的类加载器)
+    例子：Application类加载器 里面有个  parent属性 是Extension类加载器。
+
 	判断一个类是否唯一：类加载器和类本身。
 	
 Spring
