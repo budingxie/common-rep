@@ -1,5 +1,6 @@
 HashMap：
-	1.hashMap是key-value形式的集合，允许空值和空键，无序、散列表，。jdk1.8之前采用 数组+链表实现，存储的是Node元素。
+	1.hashMap是key-value形式的散列集合，允许空值和空键，无序、散列表，。jdk1.8之前采用 数组+链表实现，存储的是Node元素。jdk1.8以及之后采用的是 数组+链表+红黑树
+
 	2.在hashMap初始化的时候，有两个重要参数：初始化容量(默认16)，装载因子(默认0.75)。容量是表示数组的长度，当hashMap中的条目数超过 装载因子 * 容量的时候，就会进行扩容。新容量变成原来的两倍。
 	
 	3.put：检查table数组是否为null(为null进行初始化)，通过key的 (hashCode值 ^ (hashCode值>>>16) 得到的hash值) 和(容量-1)进行 & 操作，找到对应的数组下标。如果对应位置不存在节点，放入节点，最后判断元素的个数size和阈值进行的大小，检查是否需要扩容。如果对应位置存在节点，先检查是否是同一个key(先判断key==，再判断equals)，是的话覆盖旧值；不是的话，再判断该位置的节点是否是 TreeNode(树的插入，或者替换)。都不是的话(Node链表)，进行插入或者替换，再判断链表中节点的个数(大于8个)，如果大于(再判断容量和64比较，决定是扩容，还是转成树)。最后if (++size > threshold)是否扩容(可能造成树退化成链表)，找到最后面一段位置变动相同的头节点。
@@ -29,7 +30,7 @@ ConcurrentHashMap：
 	
 CAS锁：比较交换，java里面通过unsafe类去实现调用，是cpu上的原子指令，实现方式基于硬件平台的汇编指令。cpu通过 总线锁、缓存锁 来保证原子性。
 
-AQS锁：aqs是AbstractQueuedSynchronizer抽象类相当于一个模板类，提供一个先进先出等待队列的阻塞锁和相关同步器。具体实现有 ReentrantLock、Semaphore、、ReentrantReadWriteLock、CountDownLacth。
+AQS锁：aqs是AbstractQueuedSynchronizer抽象类相当于一个模板类，提供一个先进先出等待队列的阻塞锁和相关同步器。具体实现有 ReentrantLock、Semaphore、ReentrantReadWriteLock、CountDownLatch。
 	举例：
 	ReentrantLock里面的FairSync(公平同步)、NonfairSync(非公平同步锁，默认使用)，
 	lock()：方法获取锁
@@ -105,14 +106,120 @@ JVM：
 	判断一个类是否唯一：类加载器和类本身。
 	
 Spring
+	1.创建容器：
+	ClassPathXmlApplicationContext：是xml方式。
+	AnnotationConfigApplicationContext：是注解方式。
+
+	new容器，构造：
+		AnnotationConfigApplicationContext应该调用传入Class... annotatedClasses (注解配置类，可以传入多个)对象的构造；
+			// 隐式调用父类的无参构造，super()。
+				GenericApplicationContext()
+					// 隐式调用父类的无参构造，super() --> AbstractApplicationContext()创建一个资源解析器。
+					this.beanFactory = new DefaultListableBeanFactory(); --> 创建出一个默认容器。里面设置了一些忽略初始化bean的Class。
+			this()
+				AnnotatedBeanDefinitionReader --> 6个默认的BeanPostProcessor被注册到beanDefinitionMap：ConfigurationClassPostProcessor(重要的，BeanPostProcessor、BeanFactoryPostProcessor都实现了)
+				ClassPathBeanDefinitionScanner --> bean的扫描类
+			register()
+				用于注册需要初始化的bean --> 放入beanDefinitionMap
+			refresh()
+				prepareRefresh()
+					准备容器：设置开始时间，创建环境变量。
+				prepareBeanFactory()
+					准备bean工厂的上下文，如设置ClassLoader，以及添加后置处理器：ApplicationContextAwareProcessor、ApplicationListenerDetector、LoadTimeWeaverAwareProcessor
+				postProcessBeanFactory()
+					给子容器扩展
+				invokeBeanFactoryPostProcessors()
+					实例化，注册所有 BeanFactoryPostProcessor的bean；
+				registerBeanPostProcessors()
+					实例化并注册所有 BeanPostProcessor Bean
+
+				finishBeanFactoryInitialization()
+					preInstantiateSingletons()
+						1.先遍历beanNames，然后通过beanName去beanDefinitionMap获取bean的定义信息。
+						2.判断Bean 是否是抽象的、单例的、懒加载的；是否是FactoryBean类型(再判断是否急于初始化)。
+						3.再getBean(beanName)
+							3.1doGetBean：通过getSingleton(beanName)检查bean是否存在(1.正在创建、已经完成创建)
+								getSingleton(beanName, ObjectFactory)真正的单例bean获取。
+								createBean()
+								doCreatBean()
+								createBeanInstance()
+								populateBean()
+								initializeBean()：执行初始化方法(init())，beanPostProcessor 会进行 前置before方法、后置after方法。
+								而代理对象也在initializeBean方法里面的 前置和后置 里面进行代理的。
+
 
 Mybatis
+	SqlSessionFactoryBuilder：通过XMLConfigBuilder.parseConfiguration()对config文件进行解析；通过MapperBuilder解析mapper文件XML。统一封装成Configuration对象
+	SqlSessionFactory：把Configuration对象设置到里面。通过openSession()获取到SqlSession。
+	SqlSession：通过statement，从Configuration里面获取到MappedStatement。然后SqlSession里面的Executor属性通过MappedStatement获取对应的数据执行的Statement，和通过Configuration获取到的sql进行查询数据库操作(中间会把条件组合得到一个缓存key，判断Mybatis缓存里面是否有数据)。
+
 
 Mysql
+	权限表：user、db、table_priv、columns_priv、host
+	binlog三种录入格式
+		1.statement：每一条会修改的数据的sql都会记录在binlog中。不需要记录每一行的变化，减少日志量，节约io，提高性能。
+		2.row：不记录sql语句上下文相关信息，仅保存那条记录被修改。记录单元为每一行的改动。(此外，新版的MySQL中对row级别也做了一些优化，当表结构发生变化的时候，会记录语句而不是逐行记录。)
+		3.mixed：一种折中的方案，普通操作使用statement记录，当无法使用statement的时候使用row。
+	存储引擎
+		InnoDB
+			提供对数据库ACID事务的支持，并且还提供了行级锁、外键约束。
+		MyISAM
+			不支持事务，也不支持行级锁、外键约束。
+		区别和联系							MyISAM									InnoDB
+			存储结构						每张表被存放在三个文件：frm-表格		frm-表格式定义、idb-存储数据和索引。
+											式定义、MYD-数据文件、MY-索引文件。
+			存储空间						MyISAM可被压缩，存储空间较小。			InnoDB的表需要更多的内存和存储，它会在主内存中建立其专用的缓冲池用于高速缓冲数据和索引。
+			可移植性、备份及恢复			数据和索引是映射关系，备份方便			通过 mysqldump、binlog、copy file 数据较大时很多慢。
+			文件格式
+			记录存储顺序					按记录插入顺序保存						按主键大小有序插入
+			外键							不支持									支持
+			事务							不支持									支持
+			锁支持							表级锁定								行级锁定、表级锁定，锁定力度小并发能力高
+			Select							MyISAM更优
+			Insert、Update、Delete													InnoDB更优
+			Select count(*)					myisam更快，因为myisam内部维护了
+											一个计数器，可以直接调取。
+			索引实现方式					B+树索引，myisam 是堆表					B+树索引，Innodb 是索引组织表
+			哈希索引						不支持									支持
+			全文索引						支持									支持
+
 
 Redis
+	1.持久化
+		RDB
+			fork相同子进程，把数据写入到临时文件，当持久化结束，把临时文件替换成上次持久化好的文件。(问题：会有丢失数据的情况)
+		AOF
+			会将修改数据 命令，同步写入aof文件，当aof文件过大就会进行重写，就是fork子进程，进行读取aof文件，然后写一个临时文件(比如有set k1 vl和del k1、这两条抵消)，最后替换原文件。
+	2.集群模式
+		主从集群
+		哨兵集群
+		cluster集群
+	3.常见问题
+		缓存穿透
+			数据库中本来就没有的数据：解决方案，布隆过滤器、存储空数据设置很短的过期时间(防止很多值为null的key存在)。
+		缓存击穿
+			缓存中不存在的数据，然后有个高并发请求。导致大量请求落到mysql上：解决方案，分布式锁。
+		缓存雪崩
+			同一时间很多key都失效了，导致大量请求落到mysql上：解决方案，把key过期时间设置为不同时间段。
+		数据库和缓存怎么保证一致性
+			延时双删：写库前，先删除缓存，再写数据库。休眠一个主从数据延时的时间+(读请求耗时)，然后再次进行删除缓存。会存在一个问题，数据库写成功了，删除缓存失败。定义重试策略。
+	4.单线程为什么快
+		基于内存的读写速度快、单线程减少上下文切换时间、使用多路复用技术，可以处理并发的连接，非阻塞IO内部采用epoll+自己实现的简单事件框架。epoll中的读、写、关闭、连接都转化为事件。
+		然后利用多路复用的特性，不在io上浪费一点时间。
 
-MQ
+
+MQ：
+	好处：异步、解耦、削峰填谷
+	造成的问题：消息重复消费、消息丢失、甚至消息顺序性的问题。
+
+	解决方案
+	消息丢失：主要分为，生产端丢数据、MQ丢数据、消费端丢数据。
+	生产端丢数据：
+		使用事务消息，生产者开起，MQ没有收到的话会发送一个异常，收到则提交事务，性能低。主流通过Confirm机制，每次写消息分配一个唯一id，当MQ收到消息 会发送一ACK 给生产端。如果没有收到，则进行回调nack接口。
+	MQ丢数据：
+		持久化没成功，mq宕机了。不太可能
+	消费端丢数据：
+		消费者在代码里面手动ack。
 	
 	
 	
