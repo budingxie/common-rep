@@ -14,42 +14,85 @@ import java.util.List;
  */
 public class Array {
 
-    public static void print(char[] chars, String str) {
-        if (str != null && str.length() > 0) {
-            System.out.println(str);
-        }
-        for (int i = 0; i < chars.length; i++) {
-            char[] tmp = new char[chars.length - 1];
-            copy(chars, tmp, i);
-            String newStr = str + chars[i];
-            print(tmp, newStr);
-        }
-    }
-
-    public static void copy(char[] chars, char[] newChars, int index) {
-        for (int i = 0; i < chars.length; i++) {
-            if (index == i) {
-                continue;
-            }
-            if (i > index) {
-                newChars[i - 1] = chars[i];
-            } else {
-                newChars[i] = chars[i];
-            }
-        }
-    }
-
     public static void main(String[] args) {
-        char[] chars = {'a', 'b', 'c'};
-        print(chars, "");
-//        List<String> ca = new ArrayList<>();
-//        ca.add("a");
-//        ca.add("b");
-//        ca.add("c");
-//        dfs(ca, "");
+        int[] arr = {1, 1, 2, 3, 3};
+        System.out.println(binarySearch(arr, 1));
+        System.out.println(binarySearchLeft(arr, 0));
+        System.out.println(binarySearchRight(arr, 0));
     }
 
-    int[] array = new int[10];
+    /**
+     * 二分查找
+     *
+     * @param arr
+     * @param target
+     * @return
+     */
+    public static int binarySearch(int[] arr, int target) {
+        int left = 0, mid, right = arr.length - 1;
+        while (left <= right) {
+            mid = left + (right - left) / 2;
+            if (arr[mid] == target) {
+                return mid;
+            } else if (arr[mid] > target) {
+                right = mid - 1;
+            } else if (arr[mid] < target) {
+                left = mid + 1;
+            }
+        }
+        return -1;
+    }
+
+    /**
+     * 二分查找左边界
+     *
+     * @param arr
+     * @param target
+     * @return
+     */
+    public static int binarySearchLeft(int[] arr, int target) {
+        int low = 0, mid;
+        int height = arr.length - 1;
+        while (low <= height) {
+            mid = low + (height - low) / 2;
+            if (arr[mid] == target) {
+                height = mid - 1;
+            } else if (arr[mid] > target) {
+                height = mid - 1;
+            } else if (arr[mid] < target) {
+                low = mid + 1;
+            }
+        }
+        if (low >= arr.length || arr[low] != target) {
+            return -1;
+        }
+        return low;
+    }
+
+    /**
+     * 二分查找右边界
+     *
+     * @param arr
+     * @param target
+     * @return
+     */
+    public static int binarySearchRight(int[] arr, int target) {
+        int left = 0, mid, right = arr.length - 1;
+        while (left <= right) {
+            mid = left + (right - left) / 2;
+            if (arr[mid] == target) {
+                left = mid + 1;
+            } else if (arr[mid] > target) {
+                right = mid - 1;
+            } else if (arr[mid] < target) {
+                left = mid + 1;
+            }
+        }
+        if (right < 0 || arr[right] != target) {
+            return -1;
+        }
+        return right;
+    }
 
     /**
      * 添加、修改
@@ -110,7 +153,6 @@ public class Array {
         return false;
     }
 
-
     public static void dfs(List<String> ca, String str) {
         if (str.length() != 0) {
             System.out.println(str);
@@ -124,6 +166,31 @@ public class Array {
             dfs(tmpList, str + item);
         }
 
+    }
+
+    public static void print(char[] chars, String str) {
+        if (str != null && str.length() > 0) {
+            System.out.println(str);
+        }
+        for (int i = 0; i < chars.length; i++) {
+            char[] tmp = new char[chars.length - 1];
+            copy(chars, tmp, i);
+            String newStr = str + chars[i];
+            print(tmp, newStr);
+        }
+    }
+
+    public static void copy(char[] chars, char[] newChars, int index) {
+        for (int i = 0; i < chars.length; i++) {
+            if (index == i) {
+                continue;
+            }
+            if (i > index) {
+                newChars[i - 1] = chars[i];
+            } else {
+                newChars[i] = chars[i];
+            }
+        }
     }
 
 }
