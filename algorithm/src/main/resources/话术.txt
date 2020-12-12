@@ -96,6 +96,10 @@ AQS锁：aqs是AbstractQueuedSynchronizer抽象类相当于一个模板类，提
 	workQueue：在执行任务之前用于保留任务的队列。
 	threadFactory：线程创建的工厂。
 	handler：线程到达最大，任务队列也满了。进行的拒绝处理。
+
+	线程池问题：
+	1.使用execute和submit提交任务，如果出现异常，会出现什么情况？
+	答：execute执行会直接抛出异常；submit则不会抛出异常，只有在调用get方法获取结果的时候，会抛出。原因，submit执行任务，会将异常捕获，然后放在返回值里面。在调用get获取返回值的时候，判断是否是异常类型，然后抛出。
 	
 代理：jdk、cglib
 	jdk代理：
@@ -179,7 +183,7 @@ Spring
 								createBeanInstance()
 								populateBean()
 								initializeBean()：执行初始化方法(init())，beanPostProcessor 会进行 前置before方法、后置after方法。
-								而代理对象也在initializeBean方法里面的 前置和后置 里面进行代理的。
+								而代理对象也在initializeBean方法里面的 前置和后置 里面进行代理的。(AspectJAwareAdvisorAutoProxyCreator)
 
 
 Mybatis
@@ -260,11 +264,62 @@ MQ：
 	
 	
 	
-	
-	
-	
-	
-	
+计算机网络、协议相关
+    协议分层模型：七层、五层、四层
+    OSI：给网络协议分层标准提供理论
+    1.物理层
+    2.数据链路层
+    3.网络层
+    4.传输层
+    5.会话层
+    6.表示层
+    7.应用层
+
+    tcp/ip：制定网络协议分层的标准，可以理解为OSI的实现
+                            数据包的角度
+    1.链路层                 以太网首部；ip首部；tcp首部；[http数据、其他应用层数据]
+    2.网络层                 ip首部；tcp首部；[http数据、其他应用层数据]
+    3.传输层                 tcp首部；[http数据、其他应用层数据]
+    4.应用层                 [http数据、其他应用层数据]
+
+    ip协议：是无连接的协议，不会占用两个通信计算机的通信线路，负责将每个数据包路由到指定计算机。
+
+    传输控制协议tcp简介：
+    1.面向连接的、可靠的、基于字节流的传输层通信协议。
+    2.将应用层的数据流分割成报文并发送给目标节点的TCP层。
+    3.数据包都有序号，对方收到则发送ACK确认，未收到则重传。
+    4.使用校验和来检验数据在传输过程中是否有误。
+
+    tcp报文头部结构：
+    source port(2字节)             Destination port(2字节)
+                sequence Number(4字节)
+                Acknowledgment Number(4字节)
+    Offset(1字节)    Reserved(1字节)      TCP Flags(cwr、ece、urgent、ack、push、reset、syn、fin)(c e u a p r s f；2字节)     Window(2字节)
+    Checksum()                    Urgent Pointer
+            TCP Options(variable length、optional)
+        user data
+
+    TCP Flags(cwr、ece、urgent、ack、push、reset、syn、fin)介绍
+    URG：紧急指针标志
+    ACK：确认序号
+    psh：push标志
+    RST：重置连接标志
+    SYN：同步序列号，用于建立连接过程
+    FIN：finish标志，用于释放连接。
+
+    window窗口：指滑动窗口的大小，用来告知接收端的缓存大小。
+    checksum：接收和发送校验。
+
+    tcp的三次握手：
+    client                                          server
+状态syn-sent      --SYN=1，seq=x-->                    listen
+  established   <--SYN=1,ACK=1,seq=y,ack=x+1--      syn-rcvd
+  established   --ACK=1,seq=x+1,ack=y+1-->          established
+               <----------传输数据----------->
+
+	tcp的四次挥手：
+	client                                              server
+状态syn-send      --SYN=1
 	
 	
 	

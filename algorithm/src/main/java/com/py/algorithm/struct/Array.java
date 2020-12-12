@@ -14,14 +14,54 @@ import java.util.List;
  */
 public class Array {
 
-    public static void main(String[] args) {
-        List<String> ca = new ArrayList<>();
-        ca.add("hell");
-        ca.add("hello");
-        ca.add("wor");
-        ca.add("world");
-        dfs(ca, "");
+    public static void print(char[] chars, String str) {
+        if (str != null && str.length() > 0) {
+            System.out.println(str);
+        }
+        for (int i = 0; i < chars.length; i++) {
+            char[] tmp = new char[chars.length - 1];
+            copy(chars, tmp, i);
+            String newStr = str + chars[i];
+            print(tmp, newStr);
+        }
     }
+
+    public static void copy(char[] chars, char[] newChars, int index) {
+        for (int i = 0; i < chars.length; i++) {
+            if (index == i) {
+                continue;
+            }
+            if (i > index) {
+                newChars[i - 1] = chars[i];
+            } else {
+                newChars[i] = chars[i];
+            }
+        }
+    }
+
+    public static void main(String[] args) {
+        char[] chars = {'a', 'b', 'c'};
+        print(chars, "");
+//        List<String> ca = new ArrayList<>();
+//        ca.add("a");
+//        ca.add("b");
+//        ca.add("c");
+//        dfs(ca, "");
+    }
+
+    int[] array = new int[10];
+
+    /**
+     * 添加、修改
+     *
+     * @param arr
+     * @param index
+     * @param value
+     */
+    public void add(int[] arr, int index, int value) {
+        arr[index] = value;
+    }
+
 
     public static void isComposition(List<String> ca, String target) {
         // 1.先排序
@@ -73,9 +113,10 @@ public class Array {
 
     public static void dfs(List<String> ca, String str) {
         if (str.length() != 0) {
-            if ("bec".equals(str)) {
-                System.out.println("----cg");
-            }
+            System.out.println(str);
+//            if ("bec".equals(str)) {
+//                System.out.println("----cg");
+//            }
         }
         for (int i = 0; i < ca.size(); i++) {
             LinkedList<String> tmpList = new LinkedList<>(ca);
