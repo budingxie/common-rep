@@ -100,7 +100,7 @@ AQS锁：aqs是AbstractQueuedSynchronizer抽象类相当于一个模板类，提
 	线程池问题：
 	1.使用execute和submit提交任务，如果出现异常，会出现什么情况？
 	答：execute执行会直接抛出异常；submit则不会抛出异常，只有在调用get方法获取结果的时候，会抛出。原因，submit执行任务，会将异常捕获，然后放在返回值里面。在调用get获取返回值的时候，判断是否是异常类型，然后抛出。
-	
+
 代理：jdk、cglib
 	jdk代理：
 	基于反射机制，生成一个实现代理接口的匿名类，然后重写方法，实现方法的增强。
@@ -142,7 +142,56 @@ JVM：
     例子：Application类加载器 里面有个  parent属性 是Extension类加载器。
 
 	判断一个类是否唯一：类加载器和类本身。
-	
+
+	对象布局；对应到jvm中运行时数据区的关系
+	一个对象被创建在堆中，对象的结构是：
+	1.对象头(8byte或者16byte-->32位和64位操作系统)
+	    1.mark word(4字节或者8字节-->32位和64位操作系统)：用于记录锁状态和拥有者，以及年龄和gc标记
+	        32位：
+	        前25位是对象的HashCode
+	        后4位是对象的分代年龄
+	        后2位是锁标志位
+	        最后1位固定为0
+	        32 bits:
+              --------
+              hash:25 ------------>| age:4    biased_lock:1 lock:2 (normal object)
+              JavaThread*:23 epoch:2 age:4    biased_lock:1 lock:2 (biased object)
+              size:32 ------------------------------------------>| (CMS free block)
+              PromotedObject*:29 ---------->| promo_bits:3 ----->| (CMS promoted object)
+
+	        64位：
+	        前25位unused(没有使用)
+	        后31位是对象的HashCode
+	        后1位cms_free：和cms收集器有关、因为cms算法是标记-清理，内存碎片问题是将不可达对象委会在一个列表free list中，标记是否在列表中。
+	        后4位是对象的分代年龄
+	        后1位biased_lock 偏向锁标志
+	        最后2位lock 锁标志
+	        64 bits:
+              --------
+              unused:25 hash:31 -->| unused:1   age:4    biased_lock:1 lock:2 (normal object)
+              JavaThread*:54 epoch:2 unused:1   age:4    biased_lock:1 lock:2 (biased object)
+              PromotedObject*:61 --------------------->| promo_bits:3 ----->| (CMS promoted object)
+              size:64 ----------------------------------------------------->| (CMS free block)
+
+              unused:25 hash:31 -->| cms_free:1 age:4    biased_lock:1 lock:2 (COOPs && normal object)
+              JavaThread*:54 epoch:2 cms_free:1 age:4    biased_lock:1 lock:2 (COOPs && biased object)
+              narrowOop:32 unused:24 cms_free:1 unused:4 promo_bits:3 ----->| (COOPs && CMS promoted object)
+              unused:21 size:35 -->| cms_free:1 unused:7 ------------------>| (COOPs && CMS free block)
+             [ptr             | 00]  locked             ptr points to real header on stack
+             [header      | 0 | 01]  unlocked           regular object header
+             [ptr             | 10]  monitor            inflated lock (header is wapped out)
+             [ptr             | 11]  marked             used by markSweep to mark an object
+
+	    2.指向类信息的指针(4字节或者8字节-->32位和64位操作系统) --> 对应到方法区里面存入的类信息(字段的访问修饰符号、方法定义信息、方法字节码、常量、静态变量等)的地址
+	    3.数组长度(如果该对象是数组对象，则4字节保存长度，否则没有)
+	2.实例数据
+	3.对齐填充字节
+
+	指针压缩(1.6默认是开启的，关闭-XX:-UseCompressedOops) 注：指针压缩不能压缩mark word，指向非堆（Heap）的对象指针，局部变量、传参、返回值、NULL指针
+    由于有对齐填充，则不管什么地址都是以000结尾，这个时候可以把地址值后3去掉补充到，这个时候相当与多了3位，于是：4*8+3=35位；所以有4G*2^3 = 32G 个地址。
+    举例 0000 0000 0000 0000 0000 0000 0000 1000 --> (000) 0000 0000 0000 0000 0000 0000 0000 1000 做地址映射
+
+
 Spring
 	1.创建容器：
 	ClassPathXmlApplicationContext：是xml方式。
