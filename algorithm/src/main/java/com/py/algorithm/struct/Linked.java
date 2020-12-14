@@ -15,39 +15,49 @@ public class Linked {
         linkedNode.add(2);
         System.out.println(linkedNode);
     }
-
-
-    static class LinkedNode {
-        Node head;
-
-        public void add(Integer value) {
-            Node node = new Node();
-            node.next = null;
-            node.value = value;
-            Node h;
-            if ((h = this.head) == null) {
-                head = node;
-                return;
-            }
-            while (h.next != null) {
-                h = h.next;
-            }
-            h.next = node;
-        }
-
-        public void addFirst(Integer value) {
-
-        }
-    }
-
-    static class Node {
-
-        Node next;
-
-        Integer value;
-
-
-    }
-
-
 }
+
+class Node {
+
+    Integer value;
+
+    Node next;
+
+    public Node(Integer value, Node next) {
+        this.value = value;
+        this.next = next;
+    }
+}
+
+
+class LinkedNode {
+
+    Node head;
+
+    public void add(Integer value) {
+        Node node = new Node(value, null);
+        Node h;
+        if ((h = this.head) == null) {
+            head = node;
+            return;
+        }
+        while (h.next != null) {
+            h = h.next;
+        }
+        h.next = node;
+    }
+
+    public void addFirst(Integer value) {
+        Node current = head;
+        if (current == null) {
+            head = new Node(value, null);
+        } else {
+            head = new Node(value, current);
+        }
+    }
+
+    public int getData() {
+        return head.value;
+    }
+}
+
