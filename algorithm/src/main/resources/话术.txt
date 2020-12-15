@@ -271,10 +271,33 @@ Mysql
 			全文索引						支持									支持
 
     ACID
+        A：原子性，整个事务中的所有操作，要么全部完成，要么全部失败。
+        C：一致性，整个事务，开始和结束之间，数据库的完整性约束没有被破坏。举例，转账:不管失败还是成功，两个账户的总金额不变。
+        I：隔离性，事务之间是隔离的，一个事务不应该影响其他事务的运行效果。
+        D：持久性，事务完成后，事务对数据库所做的改变，持久的保存在数据库中。
 
-    undo log
+        怎么保证ACD：使用undo log、redo log。
+        怎么保证CI：MVCC机制。
 
-    redo log
+    undo log(文件名ibdata*)
+        重做日志，把所有没有commit的事务回滚到事务开始前的状态，系统崩溃时，可能有些事务还没commit，在系统恢复时，通过undo log进行回滚。
+        1.undo log用于存放数据修改 被修改前的值，假设把id=2记录的字段name="A"修改为"B"，那边undo log日志就存放name="A"的记录，当修改出现异常，
+            可以使用undo log进行实现回滚操作，保证事务的一致性。
+        2.为了保证事务并发操作时，在写各自的undo log时不产生冲突，InnoDB采用回滚段的方式来维护undo log的并发写入和持久化。回滚段实际是一种Undo 文件组织方式，每个回滚段又有多个undo log slot。
+
+    redo log (文件名ib_flielog*；redo log是innodb引擎层实现的，并不是所有引擎都有。)
+        1.每次更新操作都要写入磁盘，然后磁盘要找到对应记录，然后再更新。整个过程io成本、查找成本都很高。解决方案：WAL技术，先写日志，再写磁盘。
+        2.redo log的大小是固定的，在mysql中可以通过修改配置参数innodb_log_files_in_group和innodb_log_file_size配置日志文件的数量和每个日志文件的大小。
+        3.redo log采用循环写的方式记录，当写到结尾时，会回到开头循环写日志。
+        如图：redolog.png
+        例子：当一条记录需要更新，InnoDB引擎就会把记录写到redo log里面，并更新内存，这个时候更新就算完成了。同时，InnoDB引擎会在适当的时候，
+        将这个操作记录更新到磁盘里面，而这个更新往往是在系统比较空闲的时候做的。InnoDB的redo log是固定大小的，比如可以配置为一组4个文件，每个文件的
+        大小是1GB，那么总共就可以记录4GB的操作。从头开始写，写到末尾就有回到开头循环写。类似一个环状，有check point、write pos。
+        write pos：表示日志当前记录的位置，当ib_logfile_4写满后，会从ib_logfile_1从头开始记录；
+        check point：表示将日志记录的修改写进磁盘，完成数据落盘，数据落盘后checkpoint会将日志上的相关记录擦除掉，即 write pos -> check point之间的部分是redo log空着的部分，用于
+        记录新的记录；check point -> write pos 之间的部分是redo log待落盘的数据修改记录。当write pos追上check point时，得先停下记录，先推动check point向前Dion给，空出位置记录新的日志。
+        有了 redo log，当数据库发生宕机后，可通过redo log将未落盘的数据恢复，即保证已经提交的事务记录不会丢失。
+
 
     mvcc
 
