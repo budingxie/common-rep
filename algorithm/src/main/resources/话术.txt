@@ -270,6 +270,25 @@ Mysql
 			哈希索引						不支持									支持
 			全文索引						支持									支持
 
+    ACID
+
+    undo log
+
+    redo log
+
+    mvcc
+
+    慢查询日志
+
+    锁
+
+    索引
+
+    主从
+
+    分库分表
+
+
 
 Redis
 	1.持久化
@@ -359,21 +378,17 @@ MQ：
     window窗口：指滑动窗口的大小，用来告知接收端的缓存大小。
     checksum：接收和发送校验。
 
-    tcp的三次握手：
-    client                                          server
-状态syn-sent      --SYN=1，seq=x-->                    listen
-  established   <--SYN=1,ACK=1,seq=y,ack=x+1--      syn-rcvd
-  established   --ACK=1,seq=x+1,ack=y+1-->          established
-               <----------传输数据----------->
+        tcp的三次握手：
+        client                                          server
+    状态syn-sent      --SYN=1，seq=x-->                    listen
+      established   <--SYN=1,ACK=1,seq=y,ack=x+1--      syn-rcvd
+      established   --ACK=1,seq=x+1,ack=y+1-->          established
+                   <----------传输数据----------->
 
-	tcp的四次挥手：
-	client                                              server
-状态syn-send      --SYN=1
+        tcp的四次挥手：
+        client                                              server
+    状态syn-send      --SYN=1
+
+
 	
-	
-	
-	
-	
-	
-	
-	
+网络IO
