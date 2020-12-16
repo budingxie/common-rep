@@ -279,13 +279,35 @@ Mysql
         怎么保证ACD：使用undo log、redo log。
         怎么保证CI：MVCC机制。
 
-    undo log(文件名ibdata*)
+    undo log(文件名ibdata*；如图undo-segment.png)
         重做日志，把所有没有commit的事务回滚到事务开始前的状态，系统崩溃时，可能有些事务还没commit，在系统恢复时，通过undo log进行回滚。
+        purge线程，真正进行回滚或者日志删除的。
         1.undo log用于存放数据修改 被修改前的值，假设把id=2记录的字段name="A"修改为"B"，那边undo log日志就存放name="A"的记录，当修改出现异常，
             可以使用undo log进行实现回滚操作，保证事务的一致性。
-        2.为了保证事务并发操作时，在写各自的undo log时不产生冲突，InnoDB采用回滚段的方式来维护undo log的并发写入和持久化。回滚段实际是一种Undo 文件组织方式，每个回滚段又有多个undo log slot。
+        2.为了保证事务并发操作时，在写各自的undo log时不产生冲突，InnoDB采用回滚段(roll segment一共有128个，每个1024给undo segment组成)的方式来维护undo log的并发写入和持久化。回滚段实际是一种Undo 文件组织方式，每个回滚段又有多个undo log slot。
+            slot 0：预留给系统表空间。
+            slot 1-32：预留给临时表空间。每次重启数据库都会重建临时表空间。
+            slot33-127：如果有独立表空间，预留给undo独立表空间；如果没有，则预留给系统表空间。
+        3.一条记录，会在undo log里面添加row_id、trx_id、roll_pointer三隐藏字段。roll_pointer指向上一个undo log。
+            insert操作：日志类型trx_undo_insert_rec，存储undo type、undo no、table id、主键各列信息<len,value>列表等。len表示主键列占用的存储空间，value表示实际值。
+            delete操作：两阶段删除，1：delete mark阶段，将记录delete_mark标识位设置为1，不会将该记录移动到垃圾链表。2：purge阶段，当该删除语句所在的事务提交之后，会有专门的线程(purge thread)来真正的把记录删除掉。就是把记录
+                移动到垃圾链表(头插法)。由于阶段二是提交事务，如果回滚则考虑阶段一，innodb设计了一种trx_undo_del_mark_rec类型的undo日志，它存储 undo type、undo no、table id、old trx_id、old roll_pointer、主键各列信息<len,value>列表、索引列各列信息<pos,len,value>列表等信息。
+            update操作：不更新主键的情况、更新主键的情况。
+                不更新主键的情况：(存储：TRX_UNDO_UPD_EXIST_REC 的 undo 日志，它存储 undo type、undo no、table id、old trx_id、old roll_pointer、主键各列信息<len,value>列表、n_updated、被更新列更新前信息<pos, old_len, old_value>列表、索引列各列信息<pos, len, value>列表等信息。)
+                1.被更新的每个列来说，如果更新前后占用存储空间不变，那么就可以直接在原记录上直接修改。
+                2.被更新的列存储空间发送变化，就不能在原记录上直接修改，得先在聚簇索引中删除该记录，然后再根据更新后的值创建一条新的记录插入。
+                更新主键的情况：
+                1.将就旧纪录进行delete mark操作。
+                2.根据更新后各列的值创建一条新记录，重新定位并将其插入到聚簇索引中。
 
+    参考：https://www.cnblogs.com/DataArt/p/10209573.html
     redo log (文件名ib_flielog*；redo log是innodb引擎层实现的，并不是所有引擎都有。)
+        组成：通过mrt生成的redo log放在大小为512字节的redo log block中，该block由log block header(12字节)、log block body、和log block trailer(4字节)组成。
+            真正的信息都存储在log block body中，log block header和log block trailer存储了一些管理信息，包括以下几个信息：
+            log_block_hdr_no(4)：该block的唯一标记号。
+            log_block_hdr_data_len(2)：记录log大小，表示block中已经使用了多少字节，初始值为12。
+            log_block_first_rec_group(2)：这个block里面第一个第一个mtr生成的第一条redo log的偏移量。
+            log_block_checkpoint_no(4)：checkpoint的序号。
         1.每次更新操作都要写入磁盘，然后磁盘要找到对应记录，然后再更新。整个过程io成本、查找成本都很高。解决方案：WAL技术，先写日志，再写磁盘。
         2.redo log的大小是固定的，在mysql中可以通过修改配置参数innodb_log_files_in_group和innodb_log_file_size配置日志文件的数量和每个日志文件的大小。
         3.redo log采用循环写的方式记录，当写到结尾时，会回到开头循环写日志。
@@ -297,13 +319,126 @@ Mysql
         check point：表示将日志记录的修改写进磁盘，完成数据落盘，数据落盘后checkpoint会将日志上的相关记录擦除掉，即 write pos -> check point之间的部分是redo log空着的部分，用于
         记录新的记录；check point -> write pos 之间的部分是redo log待落盘的数据修改记录。当write pos追上check point时，得先停下记录，先推动check point向前Dion给，空出位置记录新的日志。
         有了 redo log，当数据库发生宕机后，可通过redo log将未落盘的数据恢复，即保证已经提交的事务记录不会丢失。
+        4.(图flush.png、flush-pro.png) redo log写入有三种模式，0、1、2；redo_log_buffer、buffer_free(os)、redo log文件；0：写入redo_log_buffer然后每隔1秒刷新到buffer_free(os)、再调用os(fsync())刷新到redo log。
+            1(默认)：直接写入通过os buffer，并调用fsync()刷到磁盘。2：从log_buffer写入os buffer，然后每秒调用fsync()刷新到磁盘。
 
-
-    mvcc
+    mvcc：基于undo log实现的
+        当进行查询或者修改操作时，会生成一个readView(有个列表存储当前活跃的读写事务，就是begin还未提交的事务。)。只查找事务版本早于自己的数据行，还有不存在列表中的。
 
     慢查询日志
+        开启慢查询日志：my.cnf
+        [mysqld]
+        long_query_time=2
+        #5.5以前版本配置如下选项
+        log-slow-queries="mysql_slow_query.log"
+        #5.5及以上版本配置如下选项
+        slow-query-log=On
+        slow_query_log_file="mysql_slow_query.log"
+
+        找到文件：使用mysql自带的工具
+        1.得到返回记录集最多的10个SQL
+        /usr/bin/mysqldumpslow -s r -t 10 mysql_slow_query_log
+        2.得到访问次数最多的10个SQL
+        /usr/bin/mysqldumpslow -s c -t 10 mysql_slow_query_log
+        3.得到按照时间排序的前10条里面含有左连接的查询语句
+        /usr/bin/mysqldumpslow -s t -t 10 -g "left join" mysql_slow_query_log
+
 
     锁
+        分类
+        1.表级锁
+            对整张表加锁。开销小，加锁快；不会出现死锁；锁的粒度大，锁发生冲突的概率最低，并发度也最高。
+        2.行级锁
+            对某行记录加锁，开销大，加锁慢；会出现死锁，锁的粒度最小，发生锁冲突的概率最低，并发度也最高。
+        3.页面锁
+            开销和加锁时间介于表锁和行锁之间；会出现死锁；锁的粒度介于表锁和行锁之间，并发度一般。
+
+        myISAM                      InnoDB
+表级锁     (1)                         (2)
+        表级别共享锁                 意向共享锁
+        表级别排它锁                 意向排它锁
+        concurrent_insert优化       表锁实现方式
+        low_priority_updates优化    优化建议
+行级锁         (3)                     (4)
+        无                          行级共享锁
+                                    行级排它锁
+                                    间隙锁
+                                    死锁的定义、检测、查询、恢复和避免
+                                    事务隔离
+                                    优化建议
+
+        (1)：
+        1.对MyISAM表的读操作(共享锁/S锁)，不会阻塞其他进程对同一表的读请求，但会阻塞对其的写请求。当读锁释放后，才会指向其他进程的写操作。
+        2.对MyISAM表的写操作(排它锁/X锁)，会阻塞其他进程对同一表的读写请求，当该锁释放后，才会执行其他进程的读写操作。
+
+        在使用MyIASM存储引擎时，执行sql语句，会自动为SELECT语句加上共享锁，为UDI(更新、删除、插入)操作加上排它锁。
+            由于这个特性在多进程并发的插入同一张表的时候，就会因为排他锁而进行等待。可以通过配置concurrent_insert系统变量，来控制其并发的插入行为。
+            concurrent_insert=0；不允许并发插入。
+            concurrent_insert=1；如果MyISAM表中没有空洞(即表中没有被删除的行)，允许一个进程读表时，另一个进程向表的尾部插入记录(Mysql默认设置)。
+            concurrent_insert=2；无论MyISAM表中有没有空洞，都允许在表尾并发插入记录。
+
+        当一个进程请求某个 MyISAM 表的读锁，另一个进程也请求同一表的写锁。
+        即使读请求先到达，写请求后到达，写请求也会插到读请求之前。因为 MySQL 的默认设置认为，写请求比读请求重要。
+        可以通过low_priority_updates 来调节读写行为的优先级：
+            数据库以读为主，要优先保证查询性能，设置为 1 ；读优先级别高于写优先级。
+            数据库以写为主，不用设置。
+
+        (2)：
+        1.意向共享锁(IS)：事务打算给数据行加行共享锁，事务在给一个数据行加共享锁前，必须先取得该表的IS锁。
+        2.意向排他锁(IX)：事务打算给数据行加行排他锁，事务在给一个数据行加排他锁前，必须先取得该表的IX锁。
+        注：表锁是系统自己加上的。对于Update、Delete、Insert语句，InnoDB会自动给数据集加排他锁。
+
+        演示(表级别的锁)：一个user表，只有id、name字段；id不是主键、也没有任何索引。当窗口1执行完update语句；窗口2开始执行，会阻塞。直到窗口1提交并释放锁。
+            1)窗口1
+            begin;
+            update user set name = "张三1" where id = 1 ;
+            commit;
+            2)窗口2
+            begin;
+            update user set name = "李四1" where id =2;
+            commit;
+
+        (4)：这部分使用的比较多
+        共享锁(S；lock in share mode)：当一个事务读取一条记录的时候，不会阻塞其他事务对同一记录的读请求，但会阻塞对其的写请求。当锁释放后，才会执行其他事务的写操作。
+        排他锁(X；for update)：当一个事务对一条记录进行写操作时，会阻塞其他事务对同一表的读写操作，当该锁释放后，才会执行其他事务的读写操作。
+
+        行锁的实现
+             演示：一个user1表，只有id、name字段；id是主键。当窗口1执行完update语句；窗口2开始执行，不会阻塞。如果更新的记录和窗口1一样的话 也会阻塞。可以通过innodb_lock_wait_timeout设置等待锁的时间
+             1)窗口1
+             begin;
+             update user set name = "张三1" where id = 1 ;
+             commit;
+             2)窗口2
+             begin;
+             update user set name = "李四1" where id =2;
+             commit;
+
+        锁的关系，如图：mysql锁.png
+
+        间隙锁：当对一个范围内的记录加锁的时候，我们称之为间隙锁。当使用范围条件索引数据时，InnoDB 会对符合条件的数据索引项加锁。
+            对于键值在条件范围内但并不存在的记录，叫做"间隙(GAP)"，InnoDB 也会对这个"间隙"加锁，这就是间隙锁。间隙锁和行锁合称(Next-Key锁)。
+            如sql：select * from table_name id > 10 for update;
+            使用间隙锁的目的，防止幻读，对于上面的sql，当有记录插入且id大于10；再次查询的时候就会多出记录。
+
+        死锁：当两个事务都需要获取对方持有的排他锁才能继续完成任务，这种互相等待对方释放资源的情况就是死锁。
+            演示：
+                1)窗口1
+                begin;                                               --1
+                update user set name = "张三1" where id =1;          --3
+                update user set name = "李四11" where id =2;         --5     // 阻塞
+                commit;
+
+                2)窗口2
+                begin;                                              --2
+                update user set name = "李四1" where id =2;         --4
+                update user set name = "张三11" where id =1;        --6     // Deadlock found when trying to get lock; try restarting transaction
+                commit;
+
+            检测死锁：InnoDB存储引擎能检测到死锁的循环依赖，并立即返回一个错误。
+            死锁恢复：死锁发生以后，只有部分或完全回滚其中一个事务，才能打破死锁。
+            InnoDB是将持有最少行级排他锁的事务回滚。在应用程序设计时，必须考虑处理死锁，多数情况下重新执行因死锁回滚的事务即可。
+
+            避免死锁：在事务中如果有更新、查询，直接申请排他锁，？？
 
     索引
 
