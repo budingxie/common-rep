@@ -5,9 +5,8 @@ package com.py.algorithm.struct;
  *
  * @author pengyou@xiaomi.com
  * @version 1.0.0
- * @date 2020/12/10
+ * @date 2020/12/18
  */
-public class Tree {
-
+public class TreeNode {
 
 }
