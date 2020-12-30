@@ -870,7 +870,7 @@ https://www.bookstack.cn/read/hadyang-interview/basic-README.md
 
 4.业务逻辑层
 	需要解决的问题：分布式事务
-    采用RPC进行调用、数据传输使用potobuf
+    采用RPC进行调用、数据传输使用protobuf
 
 
 4.1基础业务逻辑层
@@ -883,11 +883,13 @@ https://www.bookstack.cn/read/hadyang-interview/basic-README.md
 
 
 6.存储层
-	技术框架：Mysql、Redis、ES、TIDB
+	技术框架：Mysql、Redis、ES、hbase
 
 把公共的服务 命名为业务中台；如：网关、基础业务、数据访问。
 基础服务：监控平台、配置中心、日志收集服务EBLK -> Elasticsearch、beat、Logstash、Kibana
 
-服务治理平台：注册中心、配置中心、监控系统、服务追踪系统、日志系统、容器管理平台
+服务治理平台soa：注册中心、配置中心、监控系统、服务追踪系统、日志系统、容器管理平台、通信组件
+
+重要：网关中需要支持热插拔的插件
 
 
