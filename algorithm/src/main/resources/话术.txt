@@ -902,3 +902,6 @@ https://www.bookstack.cn/read/hadyang-interview/basic-README.md
 网关-monitor
     1.介绍：监控日志、生成各种运维管理报表、自动高金等；管理和监控系统主要是为 core系统服务的，起到支撑作用。
     2.功能：调用日志处理、趋势分析/报告、自动告警
+
+活动
+https://blog.csdn.net/dtlscsl/article/details/87885148
