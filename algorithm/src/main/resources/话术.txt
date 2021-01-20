@@ -493,6 +493,16 @@ Mysql
 
 
     主从
+        1.一主一从
+            master --> slave
+        2.一主多从
+            master --> slave、slave
+        3.双主
+            master <--> master
+        4.环形多主
+            master <--> master
+            |               |
+            <--> master <-->
 
     分库分表
 
