@@ -23,6 +23,7 @@
         <!-- 定时任务模块 -->
         <module>timing-schedule</module>
         <module>algorithm</module>
+        <module>design-pattern</module>
     </modules>
 
     <parent>
