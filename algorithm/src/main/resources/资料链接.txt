@@ -1,0 +1,23 @@
+数据结构：
+	1.LSM(日志结构合并树)
+	https://blog.csdn.net/las723/article/details/93767240?utm_source=app&app_version=4.5.0
+
+HBase：
+	1.基本概念和使用
+	https://www.cnblogs.com/swordfall/p/8737328.html
+	2.读写流程
+	https://andr-robot.github.io/HBase%E8%AF%BB%E5%86%99%E6%B5%81%E7%A8%8B/
+
+
+http://www.365itedu.com/download.htm
+Java代码于架构之美优化--实战经典
+https://pan.baidu.com/s/10Y6jbOf8WP5-hbjhQV2V7A
+提取码 mdap
+
+软件品质之完美管理--实战经典
+https://pan.baidu.com/s/1ysqr9rqkKAhmg8bLf_cDoA
+提取码 ycf8
+
+Java架构之美设计--实战经典
+https://pan.baidu.com/s/13WdQE9vQuHNvvfQjl_TzQw
+提取码 mfwg
