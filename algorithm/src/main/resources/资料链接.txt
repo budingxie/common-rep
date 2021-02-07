@@ -21,3 +21,16 @@ https://pan.baidu.com/s/1ysqr9rqkKAhmg8bLf_cDoA
 Java架构之美设计--实战经典
 https://pan.baidu.com/s/13WdQE9vQuHNvvfQjl_TzQw
 提取码 mfwg
+
+进程调度策略：
+
+PCB：
+https://hicsc.com/post/2020022865
+
+类加载器：
+https://segmentfault.com/a/1190000037574626
+https://www.jianshu.com/p/6c2bc351b75f
+https://www.cnblogs.com/ctxsdhy/p/12679370.html
+
+业务问题：
+https://segmentfault.com/a/1190000020970562
