@@ -22,9 +22,18 @@
 
         <!-- 定时任务模块 -->
         <module>timing-schedule</module>
+
+        <!-- 算法数据结构模块 -->
         <module>algorithm</module>
+
+        <!-- 设计模式 -->
         <module>design-pattern</module>
+
+        <!-- 分布式事务 -->
         <module>dist-tx-seata</module>
+
+        <!-- rpc调用 -->
+        <module>thrift-service</module>
     </modules>
 
     <parent>
