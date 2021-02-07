@@ -3,15 +3,22 @@ package com.py.olap.demo;
 import com.alibaba.fastjson.JSON;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import org.apache.calcite.avatica.util.Casing;
+import org.apache.calcite.avatica.util.Quoting;
+import org.apache.calcite.schema.SchemaPlus;
+import org.apache.calcite.sql.SqlNode;
+import org.apache.calcite.sql.parser.SqlParser;
+import org.apache.calcite.sql.parser.impl.SqlParserImpl;
+import org.apache.calcite.sql.validate.SqlConformanceEnum;
+import org.apache.calcite.tools.FrameworkConfig;
+import org.apache.calcite.tools.Frameworks;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.net.URL;
-import java.net.URLDecoder;
 import java.sql.*;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 /**
  * description
@@ -38,23 +45,47 @@ public class ClientMain {
 //            Connection connection = DriverManager.getConnection("jdbc:calcite:", info);
 
             // 字符串方式
-//            String model = ReourceUtil.getResourceAsString("model.json");
             URL url = ClientMain.class.getClassLoader().getResource("model.json");
             String path = url.getPath();
             FileInputStream fis = new FileInputStream(new File(path));
             byte[] bytes = new byte[1024];
             int len = fis.read(bytes);
             String model = new String(bytes, 0, len);
-
             Connection connection = DriverManager.getConnection("jdbc:calcite:model=inline:" + model);
-
             Statement statement = connection.createStatement();
-
             test1(statement);
+
+            System.out.println("=========");
+            parser();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static void parser() {
+        // https://github.com/yuqi1129/calcite-test/blob/master/README.MD
+        SchemaPlus rootSchema = Frameworks.createRootSchema(true);
+        FrameworkConfig config = Frameworks.newConfigBuilder()
+                .parserConfig(SqlParser.configBuilder()
+                        .setParserFactory(SqlParserImpl.FACTORY)
+                        .setCaseSensitive(false)
+                        .setQuoting(Quoting.BACK_TICK)
+                        .setQuotedCasing(Casing.TO_UPPER)
+                        .setUnquotedCasing(Casing.TO_UPPER)
+                        .setConformance(SqlConformanceEnum.ORACLE_12)
+                        .build()
+                ).build();
+        String sql = "select ids, name from test where id < 5 and name = 'zhang'";
+        SqlParser parser = SqlParser.create(sql, config.getParserConfig());
+        try {
+            SqlNode sqlNode = parser.parseStmt();
+            System.out.println(sqlNode.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
     }
 
 
