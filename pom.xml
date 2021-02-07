@@ -34,6 +34,9 @@
 
         <!-- rpc调用 -->
         <module>thrift-service</module>
+
+        <!-- 多数据源统一查询服务 -->
+        <module>calcite-olap</module>
     </modules>
 
     <parent>
