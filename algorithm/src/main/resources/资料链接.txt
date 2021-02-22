@@ -40,6 +40,10 @@ https://www.iotschool.com/topics/80
 https://juejin.cn/post/6844903829352382471#heading-4
 https://kafka.apachecn.org/documentation.html
 https://www.jianshu.com/p/77e16853f160
+https://blog.csdn.net/duxu24/article/details/105235438
+https://www.jianshu.com/p/255de4d3874b
+https://gitbook.cn/books/5ae1e77197c22f130e67ec4e/index.html
+https://my.oschina.net/u/4377703/blog/4325442
 
 elasticSearch：
 https://www.bookstack.cn/read/elasticsearch-definitive-guide-cn/010_Intro-05_What_is_it.md
