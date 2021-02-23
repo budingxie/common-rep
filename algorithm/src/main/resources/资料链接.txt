@@ -47,3 +47,7 @@ https://my.oschina.net/u/4377703/blog/4325442
 
 elasticSearch：
 https://www.bookstack.cn/read/elasticsearch-definitive-guide-cn/010_Intro-05_What_is_it.md
+https://www.cnblogs.com/mikevictor07/p/10006553.html
+
+hbase:
+http://www.nosqlnotes.com/technotes/hbase/hbase-overview-concepts/
