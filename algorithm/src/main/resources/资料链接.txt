@@ -51,3 +51,9 @@ https://www.cnblogs.com/mikevictor07/p/10006553.html
 
 hbase:
 http://www.nosqlnotes.com/technotes/hbase/hbase-overview-concepts/
+
+redis:
+https://juejin.cn/post/6844903798205317127
+https://zhuanlan.zhihu.com/p/311523487
+https://redisbook.readthedocs.io/en/latest/internal/rdb.html
+https://segmentfault.com/a/1190000016249217
