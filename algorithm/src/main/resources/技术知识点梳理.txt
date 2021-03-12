@@ -1,0 +1,354 @@
+技术知识点梳理
+
+# 基本知识点梳理  
+1 JDK1.8版本新特性, JVM相关只内容, CMS和G1整体对比和选型,JVM故障调整以及排查问题解决方案
+
+2 concurrentHashMap HashTable HashMap HashSet LinkedHashSet HashTree 整体内部原理
+
+3 类加载机制相关原理内容
+
+4 双亲委派机制/Tomcat反双亲委派机制原理内容
+
+5 ThreadLocal 相关原理内容 以及内存泄漏原理
+
+6 反射/ASM/JDK/CGLIB相关内容整理
+
+7 全局ID策略,雪花算法内容,其应用作用
+
+8 序列化/反序列化相关原理内容以及项目中实践内容Facade
+
+9 GC ROOT相关内容以及算法
+
+10 单例模式中 懒汉/饿汉/枚举/内部类差别 
+
+11 private public protected default 在应用中设计的作用 (结合OO设计理念)
+
+12 Object中 hashcode和equals java为何重写equals方法还需要重写hashcode,以及equals和==对比
+
+13 JAVA栈最大深度和虚拟机栈
+
+14 JAVA内存模型 happen-before 八大原则
+
+15 JAVA中引用关系 强/弱/软/虚引用
+
+----------------------------------------------------------------------------------------
+
+# 多线程知识点梳理
+1 线程整体流程图
+
+2 synchronized/lock/volatile原理分析以及区别
+
+3 无锁cas和unsafe类关系,以及atomic并发包下类分析,解决ABA问题方式
+
+4 sleep(0)/sleep(timeout)区别, run()/start()区别
+
+5 samphore/reetranLock/Condition/reetrantReadWriteLock相关技术以及原理
+
+6 阻塞队列ArrayBlockingQueue/linkedBlockingQueue原理
+
+7 CountDownLatch/CyclicBarrier区别以及原理
+
+8 进程和线程相关原理/线程上下文切换内容/PCB/IPC相关内容
+
+9 死锁形成原因/解决死锁/死锁检测
+
+10 线程池参数配置/(submit/execute) 底层内容以及参数作用
+
+
+----------------------------------------------------------------------------------------
+
+
+# 框架知识点梳理 spring/springmvc/springboot/springcloud
+一 Spring
+1 spring框架了解,轻量级框架中IOC/AOP原理和内容
+
+2 spring框架的设计理念和设计模式分析
+
+3 深入了解IOC启动流程包含(finishBeanFactoryInitialization)
+
+4 IOC容器实例化Bean中Factorybean会主动调用getObject方法生成对象吗,其原理
+
+5 BeanFactory FactoryBean ApplicationContext区别和原理
+
+6 有状态和无状态Bean理解 以及Bean的作用域
+
+7 ContextLoaderListener和dispatcherServlet相关区别和原理
+
+8 Bean的生命周期以及spring中单例Bean是线程安全的吗
+
+9 Spring框架处理线程请求/controller并发问题
+
+10 Spring框架的解决循环依赖内部源码原理
+
+11 Spring依赖注入DI相关原理
+
+12 Spring自动装配相关原理
+
+13 Spring类型事件相关源码原理
+
+14 Spring事务实现原理源码分析,事务的隔离级别,事务传播机制
+
+
+
+二 springmvc 
+1 Springmvc 的理解 其springmvc解决之前servlet关键点问题
+
+2 Springmvc工作流程和其生命周期
+
+3 Springmvc基本组件分析及其源码分析
+
+4 Springmvc返回值包含哪些,以及对于@controller控制器注解的可代替注解分析(@RestController)
+
+5 Springmvc和struts2区别,servlet和filter区别
+
+6 Springmvc如何解决乱码问题(包含Post和Get请求)
+
+7 Springmvc注解原理分析
+
+
+三 springboot
+1 springboot存在的意义以及优缺点
+
+2 springboot启动流程源码和原理分析
+
+3 springboot自动装配源码和原理分析
+ 
+
+四 springcloud
+1 springcloud基本组件分析以及原理
+
+2 springcloud和dubbo相关内容对比,其dubbo可替代springcloud组件实现
+
+
+----------------------------------------------------------------------------------------
+
+
+# 中间件知识点梳理 rabbitMQ/kafka/hbase/mysql/mybatis/redis/elasticsearch/
+一 Mysql 
+1 默认事务隔离级别怎么解决死锁和不可重复读问题 (mvcc 不可重复读 gap锁解决根本幻读)
+
+2 聚簇和非聚簇索引区别和原理
+
+3 对于mysql来说使用b+树 那不使用b树原因 以及b+树最大容量计算,以及bree树分裂过程
+
+4 mysql查询引擎中myisam和innodb区别 (5.5之前版本默认myisam,5.7版本后innodb)
+
+5 mysql半同步复制以及高可用方案
+
+6 数据库读写分离和主从复制原理分析
+
+7 b+tree和hash索引内容比较,datetime和timstamp区别, in和exist区别以及场景使用
+
+8 SQL优化和数据库优化相关技术原理内容
+
+9 死锁判定场景以及死锁解决方案
+
+10 varchar和char使用场景和区别,以及varchar最大长度问题
+
+11 数据库崩溃的事务恢复机制原理
+
+12 如何写SQL能够有效的使用到复合索引和分区
+
+13 MYSQL主从延迟怎么解决
+
+14 项目分库分表以及中间件使用原理
+
+15 高并发情况下怎么修改同一行数据
+
+16 标准行级锁有哪些,具体含义
+
+17 缓存同步,如何保证缓存一致性和怎么解决缓存误用问题
+
+18 防止SQL注入方案包含哪些
+
+19 分布式事务解决方案以及场景
+
+
+
+二 mybatis（https://www.w3cschool.cn/kzsow/kzsow-frbn2grj.html）
+1 mybatis框架优缺点,使用场景和hibernate区别
+
+2 #{}和${}的区别? 当实体类中的属性名和表中的字段名不一样解决方案? 模糊查询like语句mybatis怎么写? mybatis如何传递多个参数? 
+						如何获取自动生成主键值? mybatis如何1对1 1对多操作? mapper编写方式有哪几种? mybatis接口绑定有哪些实现方式?
+
+3 mybatis DAO层工作原理
+
+4 mybatis默认是如何分页的,以及分页插件的内部运行原理,其他插件运行原理
+
+5 XML映射文件中除select|update|insert|delete标签外,还包含哪些静态标签以及动态标签
+
+6 mybatis为什么是半自动orm映射工具,他与全同步映射工具的区别
+
+7 mybatis动态SQL包含哪些动态标签以及执行原理
+
+8 mybatis的延迟加载以及他的底层实现逻辑
+
+9 Mybatis映射文件中，如果A标签通过include引用了B标签的内容，请问，B标签能否定义在A标签的后面，还是说必须定义在A标签的前面？
+
+10 Mybatis有哪些executor执行器,他们之间的区别,如何制定某种执行器
+
+11 mybatis的xml映射文件和mybatis内部数据结构之间的映射关系
+
+12 mybatis一级缓存和二级缓存的实现原理和源码分析
+
+
+三 Redis
+1 redis有哪些数据类型以及哪些数据结构
+
+2 redis的缓存穿透,缓存雪崩问题,缓存击穿的原因以及解决方案
+
+3 分布式锁redis和分布式锁zk实现,以及其相应技术选型
+
+4 redis对于并发竞争时解决方案
+
+5 redis的持久化方式 (RDB/AOF) 以及他们在选型上需要考虑点
+
+6 redis缓存失效和淘汰策略,Redis的LRU算法和Java中的LRU算法(linkedhashMap)的区别
+
+7 redis的HA架构 sentinel模式和redis cluster区别,原理,以及技术选型根据,redis高可用的实现方式如何解决单机促使内存不足问题
+
+8 redis的主从复制机制原理 全量复制和部分复制原理
+
+9 redis为什么是单线程的 它采用单线程的优点有哪些
+
+10 redis2和redis3区别以及redis3内部通讯机制
+
+11 redis的线程模型原理
+
+12 redis的内存管理原理
+
+13 redis优化部分,解决redis瓶颈,如何进行redis的慢查询,以及慢查询分析
+ 
+
+四 rabbitMQ
+1 rabbit的基本场景以及基本原理介绍
+
+2 rabbit进阶场景以及进阶内容,实践教程
+
+3 rabbit的镜像队列原理,怎么实现HA
+
+4 rabbit中细节问题-可根据1-2查看面试rabbit中问题结合分析
+
+五 kafka
+1 kafka的深度解析
+http://www.jasongj.com/tags/Kafka/
+
+2 kafka和其他消息队列对比
+
+3 kafka处理速度快的原因以及零拷贝/顺序写过程/mmfile
+
+六 hbase
+1 hbase基础学习以及学习之路
+
+七 elasticSearch
+1 es的基本原理分析, FST/BITMAP/ROARING BITMAP等
+
+2 es是如何实现master选举的原理
+
+3 对于es索引文档的过程原理
+
+4 对于es删除/更新文件过程原理
+
+5 es的搜索过程原理
+
+6 Elasticsearch对于大数据量（上亿量级）的聚合如何实现?
+
+7 并发条件下,如何保证读写一致性
+
+8 ElasticSearch中的集群、节点、索引、文档、类型是什么？
+
+9 ElasticSearch中的分片
+
+
+----------------------------------------------------------------------------------------
+
+
+# RPC知识点梳理 Dubbo/IO
+一 Dubbo
+1 dubbo的简介和使用 
+
+2 dubbo集群容错和负载均衡模式 
+
+3 dubbo的通讯协议对比
+
+4 dubbo架构体系以及调用过程
+
+5 服务失效踢出原理
+
+6 如何实现服务上线版本不影响旧版本
+
+7 核心配置有哪些其作用
+
+8 dubbo和thrift,finagle,springcloud区别
+
+二 IO
+1 bio nio aio相关原理以及操作系统级别原理 
+
+
+----------------------------------------------------------------------------------------
+
+
+# 网络知识点梳理 nginx/HA/HAproxy
+一 网络传输
+1 OSI与TCP/IP各层的结构与功能，都有哪些协议
+
+2 TCP与UDP的区别
+
+3 TCP报文结构
+
+4 TCP的三次握手与四次挥手过程，各个状态名称与含义，TIMEWAIT和CLOSEWAIT解决方案
+
+5 Http的报文结构,状态码,请求类型说明,Http1.1和Http1.0的区别
+
+6 TCP滑动窗口与拥塞控制 回退N针协议
+
+7 TCP粘/拆包问题
+
+8 TCP状态转化
+
+9 C/S模式下使用socket通信，有几个关键函数 (包含正在三次握手队列 和完成三次握手队列,如果队列没有链接则阻塞)
+
+10 Http怎么处理长连接以及长链接和短链接区别
+
+11 Cookie与Session的作用和原理
+
+12 访问网页全流程以及前后端的传输流程
+
+13 Ping整个过程 ICMP报文是什么?
+
+14 区分路由器和交换机
+
+15 IP地址分类,子网掩码,划分子网方式
+
+16 TCP分块传送
+
+
+二 nginx/ha/haproxy
+1 正向代理/反向代理如何理解
+
+2 集群负载均衡配置,限速限流
+
+3 单机限速限流方案 分布式流量控制解决方案,以及优缺点
+
+
+----------------------------------------------------------------------------------------
+
+
+# 解决方案知识点梳理
+1 版本预期解决方案
+
+2 分布式调度解决方案-时间轮
+
+3 并发场景,秒杀问题
+
+4 怎么加速不同地点用户查询速度 CDN加速
+
+
+----------------------------------------------------------------------------------------
+
+
+# OLAP知识点梳理 	druid/kylin/doris
+
+
+
+
