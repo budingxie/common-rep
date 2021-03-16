@@ -81,9 +81,11 @@ public class BaseSort {
                 break;
             }
         }
-        int[] a = LogarithmicUtil.generateRandomArray(10, 10);
-        print(a);
-        System.out.println(Arrays.toString(a));
+        int[] a1 = {1, 2, 4, 5, 0, 0, 0, 0, 0, 0};
+        int[] a2 = {3, 6, 7, 8};
+
+        merge(a1, 4, a2, 4);
+        System.out.println(Arrays.toString(a1));
         System.out.println("finished");
     }
 
@@ -276,6 +278,7 @@ public class BaseSort {
 
     /**
      * 快排
+     *
      * @param array
      */
     private static void print(int[] array) {
@@ -314,6 +317,19 @@ public class BaseSort {
         int temp = arr[i];
         arr[i] = arr[j];
         arr[j] = temp;
+    }
+
+
+    public static void merge(int[] nums1, int m, int[] nums2, int n) {
+        int p = m-- + n-- - 1;
+        while (m >= 0 && n >= 0) {
+            nums1[p--] = nums1[m] > nums2[n] ? nums1[m--] : nums2[n--];
+        }
+
+        // 将 Nums2 中 小于 nums1 的元素赋值到 nums1 数组中
+        while (n >= 0) {
+            nums1[p--] = nums2[n--];
+        }
     }
 
 }
