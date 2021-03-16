@@ -5,8 +5,8 @@ import java.io.InputStream;
 
 /**
  * description
- *
- * @author pengyou@xiaomi.com
+ * https://blog.csdn.net/ThinkWon/article/details/104390752?utm_source=app&app_version=4.5.2
+ * @author budingxie
  * @version 1.0.0
  * @date 2021/2/3
  */
